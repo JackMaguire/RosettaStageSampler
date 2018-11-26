@@ -6,16 +6,16 @@
 ```XML
 <RosettaStageSampler>
    <Stage title="name" num_results_to_keep="[min,max,(sampling interval)]" optional="false">
-      <Sort sort_metric="total_score" negative_score_is_good="true"/>
+      <Score metric="total_score" negative_score_is_good="true"/>
       <Time begin="t1" end="t2"/>
    </Stage>
       
-   <Stage title="name" num_results_to_keep="[10,100,1]">
-      <Sort sort_metric="num_contacts" negative_score_is_good="false" optional="true"/>
-      <Time begin="t1" end="t2"/>
+   <Stage title="name" num_results_to_keep="[10,100,1]" optional="true">
+      <Score metric="num_contacts" negative_score_is_good="false"/>
+      <Time begin="t2" end="t3"/>
    </Stage>
 
-   <Score final_evaluation_term="total_score"/>
+   <Score metric="total_score" negative_score_is_good="true"/>
 </RosettaStageSampler>
 ```
 
