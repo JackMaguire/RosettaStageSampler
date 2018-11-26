@@ -4,8 +4,8 @@
 ## Idea For Scripting Format:
 
 ```XML
-<TOPLEVEL>
-   <Stage title="name" num_results_to_keep="[min,max,(interval)]">
+<RosettaStageSampler>
+   <Stage title="name" num_results_to_keep="[min,max,(sampling interval)]">
       <Sort sort_metric="total_score" negative_score_is_good="true"/>
       <Time begin="t1" end="t2"/>
    </Stage>
@@ -16,7 +16,7 @@
    </Stage>
 
    <Score final_evaluation_term="total_score"/>
-</TOPLEVEL>
+</RosettaStageSampler>
 ```
 
 ```sh
