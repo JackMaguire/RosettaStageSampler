@@ -53,6 +53,7 @@ int main(){
   }
 }
 
+[[nodiscard]]
 double estimate_minimum_runtime(
   int num_total_trajectories,
   std::array< double, 7 > const & average_runtime_for_stage_in_hours,
@@ -85,31 +86,41 @@ void run(
 
     //zero-out everything upward
     for( int i = STAGE2; i < NUM_STAGES; ++i ) percents_to_keep[ i ] = 0.0;
+    double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, percents_to_keep );
+    if( estimated_runtime > average_runtime_for_stage_in_hours ) break;
 
     for( percents_to_keep[ STAGE2 ] = 0.0; percents_to_keep[ STAGE2 ] <= 1.0; percents_to_keep[ STAGE2 ] += 0.01 ){
 
       //zero-out everything upward
       for( int i = STAGE3; i < NUM_STAGES; ++i ) percents_to_keep[ i ] = 0.0;
+      double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, percents_to_keep );
+      if( estimated_runtime > average_runtime_for_stage_in_hours ) break;
 
       for( percents_to_keep[ STAGE3 ] = 0.0; percents_to_keep[ STAGE3 ] <= 1.0; percents_to_keep[ STAGE3 ] += 0.01 ){
 
 	//zero-out everything upward
 	for( int i = STAGE4; i < NUM_STAGES; ++i ) percents_to_keep[ i ] = 0.0;
+	double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, percents_to_keep );
+	if( estimated_runtime > average_runtime_for_stage_in_hours ) break;
 
 	for( percents_to_keep[ STAGE4 ] = 0.0; percents_to_keep[ STAGE4 ] <= 1.0; percents_to_keep[ STAGE4 ] += 0.01 ){
 
 	  //zero-out everything upward
 	  for( int i = STAGE5; i < NUM_STAGES; ++i ) percents_to_keep[ i ] = 0.0;
+	  double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, percents_to_keep );
+	  if( estimated_runtime > average_runtime_for_stage_in_hours ) break;
 
 	  for( percents_to_keep[ STAGE5 ] = 0.0; percents_to_keep[ STAGE5 ] <= 1.0; percents_to_keep[ STAGE5 ] += 0.01 ){
 
 	    //zero-out everything upward
 	    for( int i = STAGE6; i < NUM_STAGES; ++i ) percents_to_keep[ i ] = 0.0;
+	    double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, percents_to_keep );
+	    if( estimated_runtime > average_runtime_for_stage_in_hours ) break;
 
 	    for( percents_to_keep[ STAGE6 ] = 0.0; percents_to_keep[ STAGE6 ] <= 1.0; percents_to_keep[ STAGE6 ] += 0.01 ){
 
-
-
+	      double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, percents_to_keep );
+	      if( estimated_runtime > average_runtime_for_stage_in_hours ) break;
 
 	    }//percents_to_keep[ STAGE6 ]
 
