@@ -2,11 +2,16 @@
 
 #include <array>
 
-constexpr std::array< float, 1 > values_for_stage1(){
-  std::array< float, 1 > vals;
-  vals[ 0 ] = 1.1;
-  return vals;
-}
+enum STAGE_TAG {
+  STAGE1 = 0,
+  STAGE2 = 1,
+  STAGE3 = 2,
+  STAGE4 = 3,
+  STAGE5 = 4,
+  STAGE6 = 5,
+  STAGE7 = 6,
+  NUM_STAGES
+};
 
 int main(){
 
@@ -34,34 +39,34 @@ int main(){
 
    */
 
-  std::array< double, 7 > percents_to_keep;
+  std::array< double, 6 > percents_to_keep { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 
-  for( double perc1 = 0; perc1 <= 1.0; perc1 += 0.01 ){
+  for( percents_to_keep[ STAGE1 ] = 0.0; percents_to_keep[ STAGE1 ] <= 1.0; percents_to_keep[ STAGE1 ] += 0.01 ){
 
-    for( double perc2 = 0; perc2 <= 1.0; perc2 += 0.01 ){
+    for( percents_to_keep[ STAGE2 ] = 0.0; percents_to_keep[ STAGE2 ] <= 1.0; percents_to_keep[ STAGE2 ] += 0.01 ){
 
-      for( double perc3 = 0; perc3 <= 1.0; perc3 += 0.01 ){
+      for( percents_to_keep[ STAGE3 ] = 0.0; percents_to_keep[ STAGE3 ] <= 1.0; percents_to_keep[ STAGE3 ] += 0.01 ){
 
-	for( double perc4 = 0; perc4 <= 1.0; perc4 += 0.01 ){
+	for( percents_to_keep[ STAGE4 ] = 0.0; percents_to_keep[ STAGE4 ] <= 1.0; percents_to_keep[ STAGE4 ] += 0.01 ){
 
-	  for( double perc5 = 0; perc5 <= 1.0; perc5 += 0.01 ){
+	  for( percents_to_keep[ STAGE5 ] = 0.0; percents_to_keep[ STAGE5 ] <= 1.0; percents_to_keep[ STAGE5 ] += 0.01 ){
 
-	    for( double perc6 = 0; perc6 <= 1.0; perc6 += 0.01 ){
-
-
+	    for( percents_to_keep[ STAGE6 ] = 0.0; percents_to_keep[ STAGE6 ] <= 1.0; percents_to_keep[ STAGE6 ] += 0.01 ){
 
 
-	    }//perc6
 
-	  }//perc5
 
-	}//perc4
+	    }//percents_to_keep[ STAGE6 ]
 
-      }//perc3
+	  }//percents_to_keep[ STAGE5 ]
 
-    }//perc2
+	}//percents_to_keep[ STAGE4 ]
 
-  }//perc1
+      }//percents_to_keep[ STAGE3 ]
+
+    }//percents_to_keep[ STAGE2 ]
+
+  }//percents_to_keep[ STAGE1 ]
 
 
 }
