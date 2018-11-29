@@ -43,6 +43,7 @@ int main(){
   std::vector< Trajectory > trajectories;
   std::array< double, 7 > average_runtime_for_stage_in_hours;
 
+  std::array< int, 10 > num_trajectories { 1e5, 1e6, 1e7, 1e8 }
   std::array< double, 4 > max_cpu_hour_options { 1e3, 1e4, 1e5, 1e6 };
   std::array< int, 6 > ensemble_size_options { 1, 5, 10, 50, 100, 500 };
 
