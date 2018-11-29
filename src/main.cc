@@ -2,6 +2,7 @@
 
 #include <array>
 #include <iostream>
+
 enum STAGE_TAG {
   STAGE1 = 0,
   STAGE2,
@@ -13,7 +14,12 @@ enum STAGE_TAG {
   NUM_STAGES
 };
 
-void run(
+struct run_results {
+  int num_trajectories;
+  std::array< double, 6 > fraction_to_keep_for_each_stage;
+};
+
+run_results run(
   std::vector< Trajectory > const & trajectories,
   std::array< double, 7 > const & average_runtime_for_stage_in_hours,
   double const max_cpu_hours,
@@ -43,7 +49,6 @@ int main(){
   std::vector< Trajectory > trajectories;
   std::array< double, 7 > average_runtime_for_stage_in_hours;
 
-  std::array< int, 10 > num_trajectories { 1e5, 1e6, 1e7, 1e8 }
   std::array< double, 4 > max_cpu_hour_options { 1e3, 1e4, 1e5, 1e6 };
   std::array< int, 6 > ensemble_size_options { 1, 5, 10, 50, 100, 500 };
 
@@ -58,12 +63,12 @@ int main(){
 double estimate_minimum_runtime(
   int num_total_trajectories,
   std::array< double, 7 > const & average_runtime_for_stage_in_hours,
-  std::array< double, 6 > const & percents_to_keep_for_stage
+  std::array< double, 6 > const & fractions_to_keep_for_stage
 ){
   std::array< int, 7 > num_trajectories_for_stage;
   num_trajectories_for_stage[ STAGE1 ] = num_total_trajectories;
   for( int i = STAGE2; i <= STAGE7; ++i ){
-    num_trajectories_for_stage[ i ] = num_trajectories_for_stage[ i-1 ] * percents_to_keep_for_stage[ i-1 ];
+    num_trajectories_for_stage[ i ] = num_trajectories_for_stage[ i-1 ] * fractions_to_keep_for_stage[ i-1 ];
   }
 
   double total_runtime = 0.0;
@@ -74,65 +79,78 @@ double estimate_minimum_runtime(
   return total_runtime;
 }
 
-void run(
+run_results
+run(
   std::vector< Trajectory > const & trajectories,
   std::array< double, 7 > const & average_runtime_for_stage_in_hours,
   double const max_cpu_hours,
   int const ensemble_size
 ){
 
-  std::array< double, 6 > percents_to_keep { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+  std::array< double, 4 > num_trajectories { 1e5, 1e6, 1e7, 1e8 };
+  int best_num_trajectories;
 
-  for( percents_to_keep[ STAGE1 ] = 0.0; percents_to_keep[ STAGE1 ] <= 1.0; percents_to_keep[ STAGE1 ] += 0.01 ){
+  std::array< double, 6 > fractions_to_keep { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+  std::array< double, 6 > best_fractions_to_keep;
 
-    //zero-out everything upward
-    for( int i = STAGE2; i < NUM_STAGES; ++i ) percents_to_keep[ i ] = 0.0;
-    double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, percents_to_keep );
-    if( estimated_runtime > average_runtime_for_stage_in_hours ) break;
+  for( int n_traj : num_trajectories ){
 
-    for( percents_to_keep[ STAGE2 ] = 0.0; percents_to_keep[ STAGE2 ] <= 1.0; percents_to_keep[ STAGE2 ] += 0.01 ){
+    for( fractions_to_keep[ STAGE1 ] = 0.0; fractions_to_keep[ STAGE1 ] <= 1.0; fractions_to_keep[ STAGE1 ] += 0.01 ){
 
       //zero-out everything upward
-      for( int i = STAGE3; i < NUM_STAGES; ++i ) percents_to_keep[ i ] = 0.0;
-      double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, percents_to_keep );
-      if( estimated_runtime > average_runtime_for_stage_in_hours ) break;
+      for( int i = STAGE2; i < NUM_STAGES; ++i ) fractions_to_keep[ i ] = 0.0;
+      double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
+      if( estimated_runtime > max_cpu_hours ) break;
 
-      for( percents_to_keep[ STAGE3 ] = 0.0; percents_to_keep[ STAGE3 ] <= 1.0; percents_to_keep[ STAGE3 ] += 0.01 ){
+      for( fractions_to_keep[ STAGE2 ] = 0.0; fractions_to_keep[ STAGE2 ] <= 1.0; fractions_to_keep[ STAGE2 ] += 0.01 ){
 
 	//zero-out everything upward
-	for( int i = STAGE4; i < NUM_STAGES; ++i ) percents_to_keep[ i ] = 0.0;
-	double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, percents_to_keep );
-	if( estimated_runtime > average_runtime_for_stage_in_hours ) break;
+	for( int i = STAGE3; i < NUM_STAGES; ++i ) fractions_to_keep[ i ] = 0.0;
+	double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
+	if( estimated_runtime > max_cpu_hours ) break;
 
-	for( percents_to_keep[ STAGE4 ] = 0.0; percents_to_keep[ STAGE4 ] <= 1.0; percents_to_keep[ STAGE4 ] += 0.01 ){
+	for( fractions_to_keep[ STAGE3 ] = 0.0; fractions_to_keep[ STAGE3 ] <= 1.0; fractions_to_keep[ STAGE3 ] += 0.01 ){
 
 	  //zero-out everything upward
-	  for( int i = STAGE5; i < NUM_STAGES; ++i ) percents_to_keep[ i ] = 0.0;
-	  double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, percents_to_keep );
-	  if( estimated_runtime > average_runtime_for_stage_in_hours ) break;
+	  for( int i = STAGE4; i < NUM_STAGES; ++i ) fractions_to_keep[ i ] = 0.0;
+	  double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
+	  if( estimated_runtime > max_cpu_hours ) break;
 
-	  for( percents_to_keep[ STAGE5 ] = 0.0; percents_to_keep[ STAGE5 ] <= 1.0; percents_to_keep[ STAGE5 ] += 0.01 ){
+	  for( fractions_to_keep[ STAGE4 ] = 0.0; fractions_to_keep[ STAGE4 ] <= 1.0; fractions_to_keep[ STAGE4 ] += 0.01 ){
 
 	    //zero-out everything upward
-	    for( int i = STAGE6; i < NUM_STAGES; ++i ) percents_to_keep[ i ] = 0.0;
-	    double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, percents_to_keep );
-	    if( estimated_runtime > average_runtime_for_stage_in_hours ) break;
+	    for( int i = STAGE5; i < NUM_STAGES; ++i ) fractions_to_keep[ i ] = 0.0;
+	    double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
+	    if( estimated_runtime > max_cpu_hours ) break;
 
-	    for( percents_to_keep[ STAGE6 ] = 0.0; percents_to_keep[ STAGE6 ] <= 1.0; percents_to_keep[ STAGE6 ] += 0.01 ){
+	    for( fractions_to_keep[ STAGE5 ] = 0.0; fractions_to_keep[ STAGE5 ] <= 1.0; fractions_to_keep[ STAGE5 ] += 0.01 ){
 
-	      double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, percents_to_keep );
-	      if( estimated_runtime > average_runtime_for_stage_in_hours ) break;
+	      //zero-out everything upward
+	      for( int i = STAGE6; i < NUM_STAGES; ++i ) fractions_to_keep[ i ] = 0.0;
+	      double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
+	      if( estimated_runtime > max_cpu_hours ) break;
 
-	    }//percents_to_keep[ STAGE6 ]
+	      for( fractions_to_keep[ STAGE6 ] = 0.0; fractions_to_keep[ STAGE6 ] <= 1.0; fractions_to_keep[ STAGE6 ] += 0.01 ){
 
-	  }//percents_to_keep[ STAGE5 ]
+		double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
+		if( estimated_runtime > max_cpu_hours ) break;
 
-	}//percents_to_keep[ STAGE4 ]
+	      }//fractions_to_keep[ STAGE6 ]
 
-      }//percents_to_keep[ STAGE3 ]
+	    }//fractions_to_keep[ STAGE5 ]
 
-    }//percents_to_keep[ STAGE2 ]
+	  }//fractions_to_keep[ STAGE4 ]
 
-  }//percents_to_keep[ STAGE1 ]
+	}//fractions_to_keep[ STAGE3 ]
 
+      }//fractions_to_keep[ STAGE2 ]
+
+    }//fractions_to_keep[ STAGE1 ]
+
+  }//ntraj
+
+  run_results results;
+  results.num_trajectories = best_num_trajectories;
+  results.fraction_to_keep_for_each_stage = best_fractions_to_keep;
+  return results;
 }
