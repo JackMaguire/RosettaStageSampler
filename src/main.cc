@@ -4,7 +4,7 @@
 #include <array>
 #include <iostream>
 
-#define CHECK_FOR_DEAD_END_ELIMINATION double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep ); if( estimated_runtime > max_cpu_hours ) break;
+#define CHECK_FOR_DEAD_END_ELIMINATION double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep ); if( estimated_runtime > max_cpu_hours ) break
 
 struct run_results {
   int num_trajectories;
@@ -123,7 +123,7 @@ run(
       //zero-out everything upward
       for( int i = STAGE2; i < NUM_STAGES; ++i )
 	fractions_to_keep[ i ] = 0.0;
-      CHECK_FOR_DEAD_END_ELIMINATION
+      CHECK_FOR_DEAD_END_ELIMINATION;
 
       for(
 	fractions_to_keep[ STAGE2 ] = 0.01;
@@ -134,7 +134,7 @@ run(
 	//zero-out everything upward
 	for( int i = STAGE3; i < NUM_STAGES; ++i )
 	  fractions_to_keep[ i ] = 0.0;
-	CHECK_FOR_DEAD_END_ELIMINATION
+	CHECK_FOR_DEAD_END_ELIMINATION;
 
 	for(
 	  fractions_to_keep[ STAGE3 ] = 0.01;
@@ -145,7 +145,7 @@ run(
 	  //zero-out everything upward
 	  for( int i = STAGE4; i < NUM_STAGES; ++i )
 	    fractions_to_keep[ i ] = 0.0;
-	  CHECK_FOR_DEAD_END_ELIMINATION
+	  CHECK_FOR_DEAD_END_ELIMINATION;
 
 	  for(
 	    fractions_to_keep[ STAGE4 ] = 0.01;
@@ -156,7 +156,7 @@ run(
 	    //zero-out everything upward
 	    for( int i = STAGE5; i < NUM_STAGES; ++i )
 	      fractions_to_keep[ i ] = 0.0;
-	    CHECK_FOR_DEAD_END_ELIMINATION
+	    CHECK_FOR_DEAD_END_ELIMINATION;
 
 	    for(
 	      fractions_to_keep[ STAGE5 ] = 0.01;
@@ -165,16 +165,17 @@ run(
 	    ){
 
 	      //zero-out everything upward
-	      for( int i = STAGE6; i < NUM_STAGES; ++i )
-		fractions_to_keep[ i ] = 0.0;
-	      CHECK_FOR_DEAD_END_ELIMINATION
+	      fractions_to_keep[ STAGE6 ] = 0.0;
+	      CHECK_FOR_DEAD_END_ELIMINATION;
 
 	      for(
 		fractions_to_keep[ STAGE6 ] = 0.01;
 		fractions_to_keep[ STAGE6 ] <= 1.0;
 		fractions_to_keep[ STAGE6 ] += step_sizes[ STAGE6 ]
 	      ){
-		CHECK_FOR_DEAD_END_ELIMINATION
+		CHECK_FOR_DEAD_END_ELIMINATION;
+
+		  //evaluate!
 
 	      }//fractions_to_keep[ STAGE6 ]
 
