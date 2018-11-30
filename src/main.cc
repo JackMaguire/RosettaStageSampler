@@ -150,7 +150,8 @@ run(
 
   std::array< double, 6 > const step_sizes = { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 };
 
-  std::array< double, 4 > num_trajectories { 1e5, 1e6, 1e7, 1e8 };
+  //std::array< double, 4 > num_trajectories { 1e5, 1e6, 1e7, 1e8 };
+  std::array< double, 4 > num_trajectories { 50, 100, 500 };
   int best_num_trajectories;
   double best_score = 99999;
 
