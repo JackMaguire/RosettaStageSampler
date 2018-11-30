@@ -29,10 +29,19 @@ struct Trajectory {
   );
 };
 
-template< int I >
-bool compare_trajectories( Trajectory const & a, Trajectory const & b ){
-  return a.score_at_the_end_of_stage[ I ] < b.score_at_the_end_of_stage[ I ];
-}
+struct TrajectorySorter {
+
+  TrajectorySorter( int stage ) :
+    stage_( stage )
+  {}
+
+  bool operator()( Trajectory const & a, Trajectory const & b ) {
+    return a.score_at_the_end_of_stage[ stage_ ] < b.score_at_the_end_of_stage[ stage_ ];
+  }
+
+private:
+  int stage_;
+};
 
 void Trajectory::read(
   std::vector< std::string > const & line_tokens,

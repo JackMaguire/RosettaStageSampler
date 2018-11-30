@@ -2,6 +2,7 @@
 #include <global.hh>
 
 #include <array>
+#include <algorithm>
 #include <cassert>
 #include <iostream>
 
@@ -110,6 +111,11 @@ get_final_trajectories(
     all_trajectories.begin() + num_initial_trajectories,
     trajectories.begin()
   );
+
+  for( int stage = STAGE1; stage < STAGE7; ++stage ){
+    int const num_survivors = trajectories.size() * fractions_to_keep[ stage ];
+    std::sort( trajectories.begin(), trajectories.end(), TrajectorySorter( stage ) );
+  }
 
   return trajectories;
 }
