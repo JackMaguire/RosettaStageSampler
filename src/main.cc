@@ -66,7 +66,10 @@ int main(){
 	run( trajectories, average_runtime_for_stage_in_hours, max_cpu, ensemble_size );
 
       std::cout << "For max_cpu = " << max_cpu << " and ensemble_size = " << ensemble_size << " best conditions are:" << std::endl;
-      
+      std::cout << "\tnum_trajectories = " << results.trajectories << std::endl;
+      for( int i = STAGE1; i < STAGE7; ++i ){
+	std::cout << "\tfrac to keep after stage " << i << " = " << results.fraction_to_keep_for_each_stage[ i ] << std::endl;
+      }
     }
   }
 }
