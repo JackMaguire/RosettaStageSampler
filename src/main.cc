@@ -102,6 +102,8 @@ run(
   int const ensemble_size
 ){
 
+  std::array< double, 6 > const step_sizes = { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 };
+
   std::array< double, 4 > num_trajectories { 1e5, 1e6, 1e7, 1e8 };
   int best_num_trajectories;
 
@@ -110,44 +112,74 @@ run(
 
   for( int n_traj : num_trajectories ){
 
-    for( fractions_to_keep[ STAGE1 ] = 0.01; fractions_to_keep[ STAGE1 ] <= 1.0; fractions_to_keep[ STAGE1 ] += 0.01 ){
+    for(
+      fractions_to_keep[ STAGE1 ] = 0.01;
+      fractions_to_keep[ STAGE1 ] <= 1.0;
+      fractions_to_keep[ STAGE1 ] += step_sizes[ STAGE1 ]
+    ){
 
       //zero-out everything upward
       for( int i = STAGE2; i < NUM_STAGES; ++i ) fractions_to_keep[ i ] = 0.0;
-      double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
+      double const estimated_runtime =
+	estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
       if( estimated_runtime > max_cpu_hours ) break;
 
-      for( fractions_to_keep[ STAGE2 ] = 0.01; fractions_to_keep[ STAGE2 ] <= 1.0; fractions_to_keep[ STAGE2 ] += 0.01 ){
+      for(
+	fractions_to_keep[ STAGE2 ] = 0.01;
+	fractions_to_keep[ STAGE2 ] <= 1.0;
+	fractions_to_keep[ STAGE2 ] += step_sizes[ STAGE2 ]
+      ){
 
 	//zero-out everything upward
 	for( int i = STAGE3; i < NUM_STAGES; ++i ) fractions_to_keep[ i ] = 0.0;
-	double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
+	double const estimated_runtime =
+	  estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
 	if( estimated_runtime > max_cpu_hours ) break;
 
-	for( fractions_to_keep[ STAGE3 ] = 0.01; fractions_to_keep[ STAGE3 ] <= 1.0; fractions_to_keep[ STAGE3 ] += 0.01 ){
+	for(
+	  fractions_to_keep[ STAGE3 ] = 0.01;
+	  fractions_to_keep[ STAGE3 ] <= 1.0;
+	  fractions_to_keep[ STAGE3 ] += step_sizes[ STAGE3 ]
+	){
 
 	  //zero-out everything upward
 	  for( int i = STAGE4; i < NUM_STAGES; ++i ) fractions_to_keep[ i ] = 0.0;
-	  double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
+	  double const estimated_runtime =
+	    estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
 	  if( estimated_runtime > max_cpu_hours ) break;
 
-	  for( fractions_to_keep[ STAGE4 ] = 0.01; fractions_to_keep[ STAGE4 ] <= 1.0; fractions_to_keep[ STAGE4 ] += 0.01 ){
+	  for(
+	    fractions_to_keep[ STAGE4 ] = 0.01;
+	    fractions_to_keep[ STAGE4 ] <= 1.0;
+	    fractions_to_keep[ STAGE4 ] += step_sizes[ STAGE4 ]
+	  ){
 
 	    //zero-out everything upward
 	    for( int i = STAGE5; i < NUM_STAGES; ++i ) fractions_to_keep[ i ] = 0.0;
-	    double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
+	    double const estimated_runtime =
+	      estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
 	    if( estimated_runtime > max_cpu_hours ) break;
 
-	    for( fractions_to_keep[ STAGE5 ] = 0.01; fractions_to_keep[ STAGE5 ] <= 1.0; fractions_to_keep[ STAGE5 ] += 0.01 ){
+	    for(
+	      fractions_to_keep[ STAGE5 ] = 0.01;
+	      fractions_to_keep[ STAGE5 ] <= 1.0;
+	      fractions_to_keep[ STAGE5 ] += step_sizes[ STAGE5 ]
+	    ){
 
 	      //zero-out everything upward
 	      for( int i = STAGE6; i < NUM_STAGES; ++i ) fractions_to_keep[ i ] = 0.0;
-	      double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
+	      double const estimated_runtime =
+		estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
 	      if( estimated_runtime > max_cpu_hours ) break;
 
-	      for( fractions_to_keep[ STAGE6 ] = 0.01; fractions_to_keep[ STAGE6 ] <= 1.0; fractions_to_keep[ STAGE6 ] += 0.01 ){
+	      for(
+		fractions_to_keep[ STAGE6 ] = 0.01;
+		fractions_to_keep[ STAGE6 ] <= 1.0;
+		fractions_to_keep[ STAGE6 ] += step_sizes[ STAGE6 ]
+	      ){
 
-		double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
+		double const estimated_runtime =
+		  estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep );
 		if( estimated_runtime > max_cpu_hours ) break;
 
 	      }//fractions_to_keep[ STAGE6 ]
