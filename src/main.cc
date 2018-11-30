@@ -105,12 +105,7 @@ get_final_trajectories(
   std::array< double, 6 > const & fractions_to_keep
 ) {
   assert( num_initial_trajectories <= all_trajectories.size() );
-  std::vector< Trajectory > trajectories;
-  std::copy(
-    all_trajectories.begin(),
-    all_trajectories.begin() + num_initial_trajectories,
-    trajectories.begin()
-  );
+  std::vector< Trajectory > trajectories( all_trajectories.begin(), all_trajectories.begin() + num_initial_trajectories );
 
   for( int stage = STAGE1; stage < STAGE7; ++stage ){
     int const num_survivors = trajectories.size() * fractions_to_keep[ stage ];
@@ -152,7 +147,7 @@ run(
 
   //std::array< double, 4 > num_trajectories { 1e5, 1e6, 1e7, 1e8 };
   std::array< double, 4 > num_trajectories { 50, 100, 500 };
-  int best_num_trajectories;
+  int best_num_trajectories = 0;
   double best_score = 99999;
 
   std::array< double, 6 > fractions_to_keep { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
