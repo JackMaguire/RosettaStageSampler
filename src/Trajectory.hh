@@ -29,6 +29,10 @@ struct Trajectory {
   );
 };
 
+template< int I >
+bool compare_trajectories( Trajectory const & a, Trajectory const & b ){
+  return a.score_at_the_end_of_stage[ I ] < b.score_at_the_end_of_stage[ I ];
+}
 
 void Trajectory::read(
   std::vector< std::string > const & line_tokens,

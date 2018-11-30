@@ -2,6 +2,7 @@
 #include <global.hh>
 
 #include <array>
+#include <cassert>
 #include <iostream>
 
 #define CHECK_FOR_DEAD_END_ELIMINATION double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep ); if( estimated_runtime > max_cpu_hours ) break
@@ -96,6 +97,23 @@ double estimate_minimum_runtime(
   return total_runtime;
 }
 
+std::vector< Trajectory >
+get_final_trajectories(
+  std::vector< Trajectory > const & all_trajectories,
+  int const num_initial_trajectories,
+  std::array< double, 6 > const & fractions_to_keep
+) {
+  assert( num_initial_trajectories <= all_trajectories.size() );
+  std::vector< Trajectory > trajectories;
+  std::copy(
+    all_trajectories.begin(),
+    all_trajectories.begin() + num_initial_trajectories,
+    trajectories.begin()
+  );
+
+  return trajectories;
+}
+
 run_results
 run(
   std::vector< Trajectory > const & trajectories,
@@ -175,7 +193,7 @@ run(
 	      ){
 		CHECK_FOR_DEAD_END_ELIMINATION;
 
-		  //evaluate!
+		//evaluate!
 
 	      }//fractions_to_keep[ STAGE6 ]
 
