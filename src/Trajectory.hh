@@ -11,7 +11,13 @@
 #include <global.hh>
 
 struct Trajectory {
-  Trajectory();
+  Trajectory(){}
+  Trajectory(
+    std::vector< std::string > const & line_tokens,
+    std::unordered_map< std::string, int > const & column_for_title
+  ){
+    read( line_tokens, column_for_title );
+  }
 
   std::array< double, 7 > cpu_hours_for_stage;
   std::array< double, 7 > score_at_the_end_of_stage;
@@ -89,13 +95,20 @@ get_column_for_title( std::string const & title_line ){
 }
 
 std::vector< Trajectory >
-load( std::string const & filename ){
+load_trajectories( std::string const & filename ){
   std::vector< std::string > const file_lines = read_lines( filename );
 
-  std::vector< Trajectory > all_trajectories;
-  all_trajectories.reserve( file_lines.size() );
+  std::unordered_map< std::string, int > const column_for_title =
+    get_column_for_title( file_lines[ 0 ] );
 
-  
+  std::vector< Trajectory > all_trajectories;
+  all_trajectories.reserve( file_lines.size() - 1 );
+
+  for( int i = 1; i < file_lines.size(); ++i ){
+    std::string const & line = file_lines[ i ];
+    std::vector< std::string > const & tokens = split( line );
+    all_trajectories.emplace_back( tokens, column_for_title );
+  }
 
   return all_trajectories;
 }
