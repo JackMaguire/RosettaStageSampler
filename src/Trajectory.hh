@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <sstream>
 #include <fstream>
+#include <iostream>
 #include <iterator>
 
 #include <global.hh>
@@ -88,6 +89,7 @@ get_column_for_title( std::string const & title_line ){
   std::unordered_map< std::string, int > map;
   for( int i=0; i < tokens.size(); ++i ){
     map[ tokens[ i ] ] = i;
+    std::cout << i << " " << tokens[ i ] << std::endl;
   }
   return map;
 }

@@ -16,6 +16,24 @@ run_results run(
   int const ensemble_size
 );
 
+std::array< double, 7 > inspect(
+  std::vector< Trajectory > const & trajectories
+){
+  std::array< double, 7 > mean_time_for_stage = { 0, 0, 0, 0, 0, 0, 0 };
+  for( Trajectory const & t : trajectories ){
+    for( int i = 0; i < 7; ++i ){
+      mean_time_for_stage[ i ] += t.cpu_hours_for_stage[ i ];
+    }
+  }
+
+  for( int i = 0; i < 7; ++i ){
+    mean_time_for_stage[ i ] /= double( trajectories.size() );
+    std::cout << "mean time for stage " << i << ": " << mean_time_for_stage[ i ] << " hours" << std::endl;
+  }
+
+  return mean_time_for_stage;
+}
+
 int main(){
 
   /*
@@ -36,8 +54,8 @@ int main(){
 
    */
 
-  std::vector< Trajectory > trajectories;
-  std::array< double, 7 > average_runtime_for_stage_in_hours;
+  std::vector< Trajectory > trajectories = load_trajectories( "temp_scores_for_development.txt" );
+  std::array< double, 7 > average_runtime_for_stage_in_hours = inspect( trajectories );
 
   std::array< double, 4 > max_cpu_hour_options { 1e3, 1e4, 1e5, 1e6 };
   std::array< int, 6 > ensemble_size_options { 1, 5, 10, 50, 100, 500 };
