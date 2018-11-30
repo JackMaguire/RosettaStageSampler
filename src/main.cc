@@ -114,10 +114,30 @@ get_final_trajectories(
 
   for( int stage = STAGE1; stage < STAGE7; ++stage ){
     int const num_survivors = trajectories.size() * fractions_to_keep[ stage ];
-    std::sort( trajectories.begin(), trajectories.end(), TrajectorySorter( stage ) );
+    if( stage < 2 ){//positive scores are better for the first two
+      std::sort( trajectories.begin(), trajectories.end(), ReverseTrajectorySorter( stage ) );
+    } else {
+      std::sort( trajectories.begin(), trajectories.end(), TrajectorySorter( stage ) );
+    }
+    trajectories.resize( num_survivors );
   }
 
+  std::sort( trajectories.begin(), trajectories.end(), TrajectorySorter( STAGE7 ) );
+
   return trajectories;
+}
+
+double
+evaluate(
+  std::vector< Trajectory > const & trajectories,
+  int const ensemble_size
+){
+  //average over the top ensemble_size elements
+  double sum = 0;
+  for( int i = 0; i < ensemble_size && i < trajectories.size(); ++i ){
+    sum += trajectories[ i ].score_at_the_end_of_stage[ STAGE7 ];
+  }
+  return sum / ensemble_size;
 }
 
 run_results
@@ -132,6 +152,7 @@ run(
 
   std::array< double, 4 > num_trajectories { 1e5, 1e6, 1e7, 1e8 };
   int best_num_trajectories;
+  double best_score = 99999;
 
   std::array< double, 6 > fractions_to_keep { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
   std::array< double, 6 > best_fractions_to_keep;
@@ -200,6 +221,18 @@ run(
 		CHECK_FOR_DEAD_END_ELIMINATION;
 
 		//evaluate!
+		std::vector< Trajectory > const survivors =
+		  get_final_trajectories(
+		    trajectories,
+		    n_traj,
+		    fractions_to_keep
+		  );
+		double const score = evaluate( survivors, ensemble_size );
+		if( score < best_score ){
+		  best_score = score;
+		  best_num_trajectories = n_traj;
+		  best_fractions_to_keep = fractions_to_keep;
+		}
 
 	      }//fractions_to_keep[ STAGE6 ]
 

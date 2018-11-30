@@ -35,8 +35,22 @@ struct TrajectorySorter {
     stage_( stage )
   {}
 
-  bool operator()( Trajectory const & a, Trajectory const & b ) {
+  bool operator()( Trajectory const & a, Trajectory const & b ) const {
     return a.score_at_the_end_of_stage[ stage_ ] < b.score_at_the_end_of_stage[ stage_ ];
+  }
+
+private:
+  int stage_;
+};
+
+struct ReverseTrajectorySorter {
+
+  ReverseTrajectorySorter( int stage ) :
+    stage_( stage )
+  {}
+
+  bool operator()( Trajectory const & a, Trajectory const & b ) const {
+    return a.score_at_the_end_of_stage[ stage_ ] > b.score_at_the_end_of_stage[ stage_ ];
   }
 
 private:
