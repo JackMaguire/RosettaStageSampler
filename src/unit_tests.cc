@@ -255,7 +255,7 @@ bool run_test_3(){
   //Case 2: Just sort on last value, truncated
   {
     //conditions:
-    //num_initial_trajectories = 8
+    //num_initial_trajectories = 4
     //fractions_to_keep[ n ] = 1.0 for all n except final, which is 0.5
     
     // # scores                     kept?
@@ -317,6 +317,19 @@ bool run_test_3(){
     if( results.size() != 4 ){
       std::cout << "run_test_3 case 1 failed!\n" <<
 	"results.size() == " << results.size() << " instead of 4" << std::endl;
+      return FAIL;
+    }
+
+    double final_score = 0;
+    for( Trajectory const & t : results ){
+      final_score += t.score_at_the_end_of_stage[ STAGE7 ];
+    }
+
+    constexpr double expectation = -8.0 - 7.0 - 6.0 - 4.0;
+
+    if( ! vals_are_very_close( final_score, expectation ) ){
+      std::cout << "run_test_3 case 1 failed!\n" <<
+	"final_score == " << final_score << " instead of " << expectation << std::endl;
       return FAIL;
     }
 
