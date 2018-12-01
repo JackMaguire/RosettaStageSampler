@@ -41,11 +41,12 @@ int main(){
 
    */
 
-  std::vector< Trajectory > trajectories = load_trajectories( "temp_scores_for_development.txt" );
-  std::array< double, 7 > average_runtime_for_stage_in_hours = inspect( trajectories );
+  std::vector< Trajectory > const trajectories = load_trajectories( "temp_scores_for_development.txt" );
+  std::array< double, 7 > const average_runtime_for_stage_in_hours =
+    get_mean_time_for_stage_in_hours( trajectories );
 
-  std::array< double, 4 > max_cpu_hour_options { 1e3, 1e4, 1e5, 1e6 };
-  std::array< int, 6 > ensemble_size_options { 1, 5, 10, 50, 100, 500 };
+  std::array< double, 4 > const max_cpu_hour_options { 1e3, 1e4, 1e5, 1e6 };
+  std::array< int, 6 > const ensemble_size_options { 1, 5, 10, 50, 100, 500 };
 
   for( double max_cpu : max_cpu_hour_options ){
     for( int ensemble_size : ensemble_size_options ){

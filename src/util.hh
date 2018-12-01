@@ -8,7 +8,7 @@
 #include <iostream>
 
 
-std::array< double, 7 > inspect(
+std::array< double, 7 > get_mean_time_for_stage_in_hours (
   std::vector< Trajectory > const & trajectories
 ){
   std::array< double, 7 > mean_time_for_stage = { 0, 0, 0, 0, 0, 0, 0 };
