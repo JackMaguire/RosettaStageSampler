@@ -28,7 +28,7 @@ std::array< double, 7 > get_mean_time_for_stage_in_hours (
 
 
 [[nodiscard]]
-double estimate_minimum_runtime(
+double estimate_minimum_runtime_in_hours(
   int num_total_trajectories,
   std::array< double, 7 > const & average_runtime_for_stage_in_hours,
   std::array< double, 6 > const & fractions_to_keep_for_stage

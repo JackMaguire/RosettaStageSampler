@@ -7,7 +7,7 @@
 #include <cassert>
 #include <iostream>
 
-#define CHECK_FOR_DEAD_END_ELIMINATION double const estimated_runtime = estimate_minimum_runtime( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep ); if( estimated_runtime > max_cpu_hours ) break;
+#define CHECK_FOR_DEAD_END_ELIMINATION double const estimated_runtime = estimate_minimum_runtime_in_hours( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep ); if( estimated_runtime > max_cpu_hours ) break;
 
 struct run_results {
   int num_trajectories;

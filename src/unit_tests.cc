@@ -87,8 +87,90 @@ bool run_test_1(){
   return return_status;
 }
 
+bool run_test_2(){
+  //Tests estimate_minimum_runtime()
+
+  //Case 1
+  {
+    //conditions:
+    //Stage n_traj hours
+    //1     16     1
+    //2-7   0      100
+    int const num_total_trajectories = 16;
+    std::array< double, 7 > const average_runtime_for_stage_in_hours =
+      { 1, 100, 100, 100, 100, 100, 100 };
+    std::array< double, 6 > const fractions_to_keep_for_stage =
+      { 0, 0, 0, 0, 0, 0 };
+
+    //expected results:
+    //16 hours
+    constexpr double expectation = 16.0;
+    double const estimation = estimate_minimum_runtime_in_hours(
+      num_total_trajectories,
+      average_runtime_for_stage_in_hours,
+      fractions_to_keep_for_stage
+    );
+
+    if( ! vals_are_very_close( estimation, expectation ) ){
+      std::cout << "run_test_2 case 1 failed!\n"
+      << "expecation: " << expectation
+      << "\nestimation: " << estimation << std::endl;
+      return FAIL;
+    }
+
+  }
+
+  //Case 2
+  {
+    //conditions:
+    //Stage n_traj hours
+    //1     64     1
+    //2     32     3
+    //3     16     9
+    //4     8      27
+    //5     4      9
+    //6     2      3
+    //7     1      1
+    int const num_total_trajectories = 64;
+    constexpr std::array< double, 7 > average_runtime_for_stage_in_hours =
+      { 1, 3, 9, 27, 9, 3, 1 };
+    constexpr std::array< double, 6 > fractions_to_keep_for_stage =
+      { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 };
+
+    //expected results:
+    //16 hours
+    constexpr double expectation =
+      64 * average_runtime_for_stage_in_hours[ STAGE1 ] +
+      32 * average_runtime_for_stage_in_hours[ STAGE2 ] +
+      16 * average_runtime_for_stage_in_hours[ STAGE3 ] +
+      8  * average_runtime_for_stage_in_hours[ STAGE4 ] +
+      4  * average_runtime_for_stage_in_hours[ STAGE5 ] +
+      2  * average_runtime_for_stage_in_hours[ STAGE6 ] +
+      1  * average_runtime_for_stage_in_hours[ STAGE7 ];
+
+    double const estimation = estimate_minimum_runtime_in_hours(
+      num_total_trajectories,
+      average_runtime_for_stage_in_hours,
+      fractions_to_keep_for_stage
+    );
+
+    if( ! vals_are_very_close( estimation, expectation ) ){
+      std::cout << "run_test_2 case 2 failed!\n"
+      << "expecation: " << expectation
+      << "\nestimation: " << estimation << std::endl;
+      return FAIL;
+    }
+
+  }
+
+  return PASS;
+}
+
 int main(){
-  if( run_test_1() ){
+  if(
+    run_test_1() &&
+    run_test_2()
+  ){
     std::cout << "All tests pass" << std::endl;
     return 0;
   } else {
