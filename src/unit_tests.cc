@@ -166,10 +166,16 @@ bool run_test_2(){
   return PASS;
 }
 
+bool run_test_3(){
+  //Tests get_final_trajectories();
+  return PASS:
+}
+
 int main(){
   if(
     run_test_1() &&
-    run_test_2()
+    run_test_2() &&
+    run_test_3()
   ){
     std::cout << "All tests pass" << std::endl;
     return 0;
