@@ -6,7 +6,8 @@
 #include <algorithm>
 #include <cassert>
 #include <iostream>
-#include <math.h>
+//#include <math.h>
+#include <cmath>
 
 #define PASS true
 #define FAIL false
