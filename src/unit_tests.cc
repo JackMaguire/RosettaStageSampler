@@ -197,34 +197,34 @@ bool run_test_3(){
     std::vector< Trajectory > trajectories( 8 );
     for( int i=0; i<trajectories.size(); ++i ){
       Trajectory & t = trajectories[ i ];
-      for( int stage = STAGE1; stage < STAGE7; ++stage ){
+      for( int stage = STAGE1; stage < STAGE6; ++stage ){
 	t.score_at_the_end_of_stage[ stage ] = 0;
       }
 
       switch( i ){
 	case 0:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -1.0;
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -1.0;
 	  break;
 	case 1:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -8.0;
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -8.0;
 	  break;
 	case 2:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -2.0;
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -2.0;
 	  break;
 	case 3:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -7.0;
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -7.0;
 	  break;
 	case 4:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -3.0;
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -3.0;
 	  break;
 	case 5:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -6.0;
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -6.0;
 	  break;
 	case 6:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -4.0;
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -4.0;
 	  break;
 	case 7:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -4.0;
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -4.0;
 	  break;
       }
     }
@@ -240,7 +240,7 @@ bool run_test_3(){
 
     double final_score = 0;
     for( Trajectory const & t : results ){
-      final_score += t.score_at_the_end_of_stage[ STAGE7 ];
+      final_score += t.score_at_the_end_of_stage[ STAGE6 ];
     }
 
     constexpr double expectation = -8.0 - 7.0 - 6.0 - 4.0;
@@ -253,90 +253,160 @@ bool run_test_3(){
 
   }
 
-  /*
-  //Case 2: Just sort on last value, truncated
+
+  //Case 2: Just sort on two value
   {
     //conditions:
-    //num_initial_trajectories = 4
-    //fractions_to_keep[ n ] = 1.0 for all n except final, which is 0.5
+    //num_initial_trajectories = 8
     
-    // # scores                     kept?
-    // 0 { 0, 0, 0, 0, 0, 0, -1 }
-    // 1 { 0, 0, 0, 0, 0, 0, -8 }
-    // 2 { 0, 0, 0, 0, 0, 0, -2 }
-    // 3 { 0, 0, 0, 0, 0, 0, -7 }
-    // 4 { 0, 0, 0, 0, 0, 0, -3 }
-    // 5 { 0, 0, 0, 0, 0, 0, -6 }
-    // 6 { 0, 0, 0, 0, 0, 0, -4 }
-    // 7 { 0, 0, 0, 0, 0, 0, -4 }
+    // # scores
+    // 0 { 0, 0, -1, 0, 0, -1 }
+    // 1 { 0, 0, -2, 0, 0, -2 }
+    // 2 { 0, 0, -1, 0, 0, -3 }
+    // 3 { 0, 0, -2, 0, 0, -4 }
+    // 4 { 0, 0, -1, 0, 0, -5 }
+    // 5 { 0, 0, -2, 0, 0, -6 }
+    // 6 { 0, 0, -1, 0, 0, -7 }
+    // 7 { 0, 0, -2, 0, 0, -8 }
+
+    //After first filtration:
+    // # scores
+    // 1 { 0, 0, -2, 0, 0, -2 }
+    // 3 { 0, 0, -2, 0, 0, -4 }
+    // 5 { 0, 0, -2, 0, 0, -6 }
+    // 7 { 0, 0, -2, 0, 0, -8 }
+
+    //After second filtration:
+    // # scores
+    // 7 { 0, 0, -2, 0, 0, -8 }
+    // 5 { 0, 0, -2, 0, 0, -6 }
 
     std::array< double, 6 > fractions_to_keep;
-    for( int stage = STAGE1; stage < STAGE6; ++stage ){
+    for( int stage = STAGE1; stage <= STAGE6; ++stage ){
       fractions_to_keep[ stage ] = 1.0;
     }
+    fractions_to_keep[ STAGE3 ] = 0.5;
     fractions_to_keep[ STAGE6 ] = 0.5;
-
-
 
     std::vector< Trajectory > trajectories( 8 );
     for( int i=0; i<trajectories.size(); ++i ){
       Trajectory & t = trajectories[ i ];
-      for( int stage = STAGE1; stage < STAGE7; ++stage ){
+      for( int stage = STAGE1; stage < STAGE6; ++stage ){
 	t.score_at_the_end_of_stage[ stage ] = 0;
       }
 
-      switch( i ){
-	case 0:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -1.0;
-	  break;
-	case 1:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -8.0;
-	  break;
-	case 2:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -2.0;
-	  break;
-	case 3:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -7.0;
-	  break;
-	case 4:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -3.0;
-	  break;
-	case 5:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -6.0;
-	  break;
-	case 6:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -4.0;
-	  break;
-	case 7:
-	  t.score_at_the_end_of_stage[ STAGE7 ] = -4.0;
-	  break;
-      }
+      t.score_at_the_end_of_stage[ STAGE3 ] = ( i % 2 == 0 ? -1 : -2 );
+      t.score_at_the_end_of_stage[ STAGE6 ] = 0 - 1 - i;
     }
 
     std::vector< Trajectory > const results =
-      get_final_trajectories( trajectories, 8, fractions_to_keep );
+      get_final_trajectories( trajectories, fractions_to_keep );
 
-    if( results.size() != 4 ){
-      std::cout << "run_test_3 case 1 failed!\n" <<
-	"results.size() == " << results.size() << " instead of 4" << std::endl;
+    /*for( auto const & t : results ){
+      for( int stage = STAGE1; stage < STAGE7; ++stage ){
+	std::cout << "\t" << t.score_at_the_end_of_stage[ stage ] << std::endl;
+      }      
+      std::cout << std::endl;
+    }
+    return FAIL;*/
+
+    if( results.size() != 2 ){
+      std::cout << "run_test_3 case 2 failed!\n" <<
+	"results.size() == " << results.size() << " instead of 2" << std::endl;
       return FAIL;
     }
 
     double final_score = 0;
     for( Trajectory const & t : results ){
-      final_score += t.score_at_the_end_of_stage[ STAGE7 ];
+      final_score += t.score_at_the_end_of_stage[ STAGE6 ];
     }
 
-    constexpr double expectation = -8.0 - 7.0 - 6.0 - 4.0;
+    constexpr double expectation = -8.0 - 6.0;
 
     if( ! vals_are_very_close( final_score, expectation ) ){
-      std::cout << "run_test_3 case 1 failed!\n" <<
+      std::cout << "run_test_3 case 2 failed!\n" <<
 	"final_score == " << final_score << " instead of " << expectation << std::endl;
       return FAIL;
     }
 
   }
-  */
+
+  //Case 3: Just sort on two value
+  {
+    //conditions:
+    //num_initial_trajectories = 8
+    
+    // # scores                     i/2
+    // 0 { 1, 0, -1, 0, 0, -1 }     0
+    // 1 { 1, 0, -2, 0, 0, -2 }     0
+    // 2 { 0, 0, -1, 0, 0, -3 }     1
+    // 3 { 0, 0, -2, 0, 0, -4 }     1
+    // 4 { 1, 0, -1, 0, 0, -5 }     2
+    // 5 { 1, 0, -2, 0, 0, -6 }     2
+    // 6 { 0, 0, -1, 0, 0, -7 }     3
+    // 7 { 0, 0, -2, 0, 0, -8 }     3
+
+    //After first filtration:
+    // # scores
+    // 0 { 1, 0, -1, 0, 0, -1 }
+    // 1 { 1, 0, -2, 0, 0, -2 }
+    // 4 { 1, 0, -1, 0, 0, -5 }
+    // 5 { 1, 0, -2, 0, 0, -6 }
+
+    //After second filtration:
+    // # scores
+    // 1 { 1, 0, -2, 0, 0, -2 }
+    // 5 { 1, 0, -2, 0, 0, -6 }
+
+    //After third filtration:
+    // # scores
+    // 5 { 1, 0, -2, 0, 0, -6 }
+
+    std::array< double, 6 > fractions_to_keep;
+    for( int stage = STAGE1; stage <= STAGE6; ++stage ){
+      fractions_to_keep[ stage ] = 1.0;
+    }
+    fractions_to_keep[ STAGE1 ] = 0.5;
+    fractions_to_keep[ STAGE3 ] = 0.5;
+    fractions_to_keep[ STAGE6 ] = 0.5;
+
+    std::vector< Trajectory > trajectories( 8 );
+    for( int i=0; i<trajectories.size(); ++i ){
+      Trajectory & t = trajectories[ i ];
+      for( int stage = STAGE1; stage < STAGE6; ++stage ){
+	t.score_at_the_end_of_stage[ stage ] = 0;
+      }
+
+      t.score_at_the_end_of_stage[ STAGE1 ] = ( (i/2) % 2 == 0 ? 1 : 0 );
+      t.score_at_the_end_of_stage[ STAGE3 ] = ( i % 2 == 0 ? -1 : -2 );
+      t.score_at_the_end_of_stage[ STAGE6 ] = 0 - 1 - i;
+    }
+
+    std::vector< Trajectory > const results =
+      get_final_trajectories( trajectories, fractions_to_keep );
+
+    if( results.size() != 1 ){
+      std::cout << "run_test_3 case 3 failed!\n" <<
+	"results.size() == " << results.size() << " instead of 1" << std::endl;
+      return FAIL;
+    }
+
+    double final_score = 0;
+    for( Trajectory const & t : results ){
+      final_score += t.score_at_the_end_of_stage[ STAGE6 ];
+    }
+
+    constexpr double expectation = -6.0;
+
+    if( ! vals_are_very_close( final_score, expectation ) ){
+      std::cout << "run_test_3 case 3 failed!\n" <<
+	"final_score == " << final_score << " instead of " << expectation << std::endl;
+      return FAIL;
+    }
+
+  }
+
+
 
   return PASS;
 }

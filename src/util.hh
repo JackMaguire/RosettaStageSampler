@@ -62,14 +62,14 @@ get_final_trajectories(
       std::partial_sort(
 			trajectories.begin(),//begin
 			trajectories.begin() + num_survivors,//middle
-			trajectories.end(),//end
+			trajectories.begin() + num_alive,//end
 			ReverseTrajectorySorter( stage )//comparator
 			);
     } else {
       std::partial_sort(
 			trajectories.begin(),//begin
 			trajectories.begin() + num_survivors,//middle
-			trajectories.end(),//end
+			trajectories.begin() + num_alive,//end
 			TrajectorySorter( stage )//comparator
 			);
     }
