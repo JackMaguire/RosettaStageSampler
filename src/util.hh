@@ -49,33 +49,65 @@ double estimate_minimum_runtime_in_hours(
 
 std::vector< Trajectory >
 get_final_trajectories(
-  std::vector< Trajectory > const & all_trajectories,
-  int const num_initial_trajectories,
+  std::vector< Trajectory > & trajectories,
   std::array< double, 6 > const & fractions_to_keep
 ) {
-  assert( num_initial_trajectories <= all_trajectories.size() );
-  std::vector< Trajectory > trajectories( all_trajectories.begin(), all_trajectories.begin() + num_initial_trajectories );
-
+  int num_alive = trajectories.size();
   for( int stage = STAGE1; stage < STAGE7; ++stage ){
-    int const num_survivors = trajectories.size() * fractions_to_keep[ stage ];
-    if( stage < 2 ){//positive scores are better for the first two
-      std::sort( trajectories.begin(), trajectories.end(), ReverseTrajectorySorter( stage ) );
+    if( fractions_to_keep[ stage ] >= 1.0 ) continue;
+
+    int const num_survivors = num_alive * fractions_to_keep[ stage ];
+
+    if( stage < STAGE3 ){//positive scores are better for the first two
+      std::partial_sort(
+			trajectories.begin(),//begin
+			trajectories.begin() + num_survivors,//middle
+			trajectories.end(),//end
+			ReverseTrajectorySorter( stage )//comparator
+			);
     } else {
-      std::sort( trajectories.begin(), trajectories.end(), TrajectorySorter( stage ) );
+      std::partial_sort(
+			trajectories.begin(),//begin
+			trajectories.begin() + num_survivors,//middle
+			trajectories.end(),//end
+			TrajectorySorter( stage )//comparator
+			);
     }
-    trajectories.resize( num_survivors );
+
+    num_alive = num_survivors;
+    //trajectories.resize( num_survivors );
   }
 
-  std::sort( trajectories.begin(), trajectories.end(), TrajectorySorter( STAGE7 ) );
+  //return unsorted
+  // std::sort( trajectories.begin(), trajectories.end(), TrajectorySorter( STAGE7 ) );
 
-  return trajectories;
+  return std::vector< Trajectory >( trajectories.begin(), trajectories.begin() + num_alive );
+
+  //return trajectories;
 }
 
 double
 evaluate(
-  std::vector< Trajectory > const & trajectories,
-  int const ensemble_size
+  std::vector< Trajectory > & trajectories,
+  int const ensemble_size,
+  int const stage = STAGE7
 ){
+  if( ensemble_size < trajectories.size() ){
+    std::partial_sort(
+		      trajectories.begin(),//begin
+		      trajectories.begin() + ensemble_size,//middle
+		      trajectories.end(),//end
+		      TrajectorySorter( stage )//comparator
+		      );
+  } else {
+    std::sort(
+	      trajectories.begin(),//begin
+	      trajectories.end(),//end
+	      TrajectorySorter( stage )//comparator
+	      );
+  }
+
+
   //average over the top ensemble_size elements
   double sum = 0;
   for( int i = 0; i < ensemble_size && i < trajectories.size(); ++i ){

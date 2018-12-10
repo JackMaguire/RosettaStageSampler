@@ -64,7 +64,7 @@ int main(){
 
 run_results
 run(
-  std::vector< Trajectory > const & trajectories,
+  std::vector< Trajectory > const & all_trajectories,
   std::array< double, 7 > const & average_runtime_for_stage_in_hours,
   double const max_cpu_hours,
   int const ensemble_size
@@ -81,6 +81,7 @@ run(
   std::array< double, 6 > best_fractions_to_keep;
 
   for( int n_traj : num_trajectories ){
+    std::vector< Trajectory > trajectories( all_trajectories.begin(), all_trajectories.begin() + n_traj );
 
     for(
       fractions_to_keep[ STAGE1 ] = 0.01;
@@ -144,10 +145,9 @@ run(
 		CHECK_FOR_DEAD_END_ELIMINATION;
 
 		//evaluate!
-		std::vector< Trajectory > const survivors =
+		std::vector< Trajectory > survivors =
 		  get_final_trajectories(
 		    trajectories,
-		    n_traj,
 		    fractions_to_keep
 		  );
 		double const score = evaluate( survivors, ensemble_size );

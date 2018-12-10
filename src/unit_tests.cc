@@ -230,7 +230,7 @@ bool run_test_3(){
     }
 
     std::vector< Trajectory > const results =
-      get_final_trajectories( trajectories, 8, fractions_to_keep );
+      get_final_trajectories( trajectories, fractions_to_keep );
 
     if( results.size() != 4 ){
       std::cout << "run_test_3 case 1 failed!\n" <<
@@ -253,6 +253,7 @@ bool run_test_3(){
 
   }
 
+  /*
   //Case 2: Just sort on last value, truncated
   {
     //conditions:
@@ -335,7 +336,7 @@ bool run_test_3(){
     }
 
   }
-
+  */
 
   return PASS;
 }
