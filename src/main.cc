@@ -46,6 +46,12 @@ int main(){
   std::array< double, 7 > const average_runtime_for_stage_in_hours =
     my_pair.second;
 
+  for( int i = STAGE1; i <= STAGE7; ++i ){
+    std::cout << "average time for stage " << i << " is " << average_runtime_for_stage_in_hours[ i ] << "hours\n";
+  }
+
+  return 0;
+
   std::array< double, 4 > const max_cpu_hour_options { 1e3, 1e4, 1e5, 1e6 };
   std::array< int, 6 > const ensemble_size_options { 1, 5, 10, 50, 100, 500 };
 
