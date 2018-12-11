@@ -67,6 +67,29 @@ int main(){
       }
     }
   }
+}//main
+
+double
+determine_fraction_of_real_survivors( std::vector< Trajectory > & trajectories, double const fraction_to_keep_for_stage1 ){
+  int const num_to_keep = trajectories.size() * fraction_to_keep_for_stage1;
+  if( num_to_keep < 1.0 ){
+    std::partial_sort(
+      trajectories.begin(),//begin
+      trajectories.begin() + num_to_keep,//middle
+      trajectories.end(),//end
+      ReverseTrajectorySorter( stage )//comparator
+    );
+  }
+  int num_valid = 0;
+  for( int i=0; i < num_to_keep; ++i ){
+    if( trajectories[ i ].score_at_the_end_of_stage[ STAGE1 ] > -9000 ){
+      ++num_valid;
+    }
+  }
+
+  double const answer = double( num_valid ) / double( num_to_keep );
+  assert( answer < 1.0 );
+  return answer;
 }
 
 run_results
@@ -77,7 +100,7 @@ run(
   int const ensemble_size
 ){
 
-  std::array< double, 6 > const step_sizes = { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 };
+  std::array< double, 6 > const step_sizes = { 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 };
 
   //std::array< double, 4 > num_trajectories { 1e5, 1e6, 1e7, 1e8 };
   std::array< double, 4 > num_trajectories { 50, 100, 500 };
@@ -101,9 +124,12 @@ run(
 	fractions_to_keep[ i ] = 0.0;
       CHECK_FOR_DEAD_END_ELIMINATION;
 
+      double const stage_2_max =
+	determine_fraction_of_real_survivors( trajectories, fractions_to_keep[ STAGE1 ] );
+
       for(
 	fractions_to_keep[ STAGE2 ] = 0.01;
-	fractions_to_keep[ STAGE2 ] <= 1.0;
+	fractions_to_keep[ STAGE2 ] <= stage_2_max;
 	fractions_to_keep[ STAGE2 ] += step_sizes[ STAGE2 ]
       ){
 
