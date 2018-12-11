@@ -12,6 +12,8 @@ extra="-Ofast"
 CXX="g++-5"
 #CXX="clang++"
 
-echo $CXX $case.cc -o $case -I. -std=c++1z $extra
-$CXX $case.cc -o $case -I. -std=c++1z $extra
+omp="-fopenmp -lpthread"
+
+echo $CXX $case.cc -o $case -I. -std=c++1z $extra $omp
+$CXX $case.cc -o $case -I. -std=c++1z $extra $omp
 

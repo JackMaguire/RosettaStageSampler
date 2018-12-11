@@ -12,7 +12,8 @@
 double estimate_minimum_runtime_in_hours(
   int num_total_trajectories,
   std::array< double, 7 > const & average_runtime_for_stage_in_hours,
-  std::array< double, 6 > const & fractions_to_keep_for_stage
+  std::array< double, 6 > const & fractions_to_keep_for_stage,
+  bool account_for_missing_trajectories_from_round1 = false
 ){
   std::array< int, 7 > num_trajectories_for_stage;
   num_trajectories_for_stage[ STAGE1 ] = num_total_trajectories;
@@ -23,6 +24,13 @@ double estimate_minimum_runtime_in_hours(
   double total_runtime = 0.0;
   for( int i = STAGE1; i <= STAGE7; ++i ){
     total_runtime += num_trajectories_for_stage[ i ] * average_runtime_for_stage_in_hours[ i ];
+  }
+
+  if( account_for_missing_trajectories_from_round1 ){
+    constexpr double mul_factor = 7612333.0 / 94848.0;
+    auto const num_ghost_trajectories = (num_trajectories_for_stage[ STAGE1 ] * mul_factor) - num_trajectories_for_stage[ STAGE1 ];
+    total_runtime +=
+      average_runtime_for_stage_in_hours[ STAGE1 ] * num_ghost_trajectories;
   }
 
   return total_runtime;

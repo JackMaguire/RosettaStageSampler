@@ -6,19 +6,22 @@
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+#include <fstream>
 
-#define CHECK_FOR_DEAD_END_ELIMINATION double const estimated_runtime = estimate_minimum_runtime_in_hours( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep ); if( estimated_runtime > max_cpu_hours ) break;
+#define CHECK_FOR_DEAD_END_ELIMINATION double const estimated_runtime = estimate_minimum_runtime_in_hours( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep, true ); if( estimated_runtime > max_cpu_hours ) break;
 
 struct run_results {
   int num_trajectories;
   std::array< double, 6 > fraction_to_keep_for_each_stage;
+  double score;
 };
 
 run_results run(
   std::vector< Trajectory > const & trajectories,
   std::array< double, 7 > const & average_runtime_for_stage_in_hours,
   double const max_cpu_hours,
-  int const ensemble_size
+  int const ensemble_size,
+  std::ofstream & log_stream
 );
 
 int main(){
@@ -41,32 +44,55 @@ int main(){
 
    */
 
-  auto my_pair = load_trajectories( "../run/trajectories.dat" );
+
+  auto my_pair = load_trajectories( "../run/trajectories.shuf.dat" );
   std::vector< Trajectory > const trajectories = std::move( my_pair.first );
-  std::array< double, 7 > const average_runtime_for_stage_in_hours =
-    my_pair.second;
+  std::array< double, 7 > const average_runtime_for_stage_in_hours = my_pair.second;
 
   for( int i = STAGE1; i <= STAGE7; ++i ){
     std::cout << "average time for stage " << i << " is " << average_runtime_for_stage_in_hours[ i ] << "hours\n";
   }
 
-  return 0;
+  constexpr std::array< double, 4 > max_cpu_hour_options { 1e3, 1e4, 1e5, 1e6 };
+  constexpr std::array< int, 6 > ensemble_size_options { 1, 5, 10, 50, 100, 500 };
 
-  std::array< double, 4 > const max_cpu_hour_options { 1e3, 1e4, 1e5, 1e6 };
-  std::array< int, 6 > const ensemble_size_options { 1, 5, 10, 50, 100, 500 };
+  constexpr int num_combos = max_cpu_hour_options.size() * ensemble_size_options.size();
 
-  for( double max_cpu : max_cpu_hour_options ){
-    for( int ensemble_size : ensemble_size_options ){
-      run_results const results =
-	run( trajectories, average_runtime_for_stage_in_hours, max_cpu, ensemble_size );
+  std::vector< run_results > all_results( num_combos );
 
-      std::cout << "For max_cpu = " << max_cpu << " and ensemble_size = " << ensemble_size << " best conditions are:" << std::endl;
-      std::cout << "\tnum_trajectories = " << results.num_trajectories << std::endl;
-      for( int i = STAGE1; i < STAGE7; ++i ){
-	std::cout << "\tfrac to keep after stage " << i << " = " << results.fraction_to_keep_for_each_stage[ i ] << std::endl;
-      }
+
+#pragma omp parallel shared( all_results )
+#pragma omp for
+  for( int i = num_combos - 1; i >= 0; --i ){//work backwards, do slow ones first
+    int const cpu_ind = i % max_cpu_hour_options.size();
+    int const ensemble_ind = i / max_cpu_hour_options.size();
+    double const max_cpu = max_cpu_hour_options[ cpu_ind ];
+    int const ensemble_size = ensemble_size_options[ ensemble_ind ];
+
+
+    std::ofstream log_stream;
+    log_stream.open( std::to_string( i ) + ".log" );    
+    all_results[ i ] = run( trajectories, average_runtime_for_stage_in_hours, max_cpu, ensemble_size, log_stream );
+    log_stream.close();
+
+    std::cout << "For max_cpu = " << max_cpu << " and ensemble_size = " << ensemble_size << " best conditions are:" << std::endl;
+    std::cout << "\tnum_trajectories = " << all_results[ i ].num_trajectories << std::endl;
+    for( int i = STAGE1; i < STAGE7; ++i ){
+      std::cout << "\tfrac to keep after stage " << i << " = " << all_results[ i ].fraction_to_keep_for_each_stage[ i ] << std::endl;
     }
+    std::cout << "\t with score " << all_results[ i ].score << std::endl;
+
+    std::ofstream out_stream;
+    out_stream.open( std::to_string( i ) + ".dat" );
+    out_stream << "For max_cpu = " << max_cpu << " and ensemble_size = " << ensemble_size << " best conditions are:" << std::endl;
+    out_stream << "\tnum_trajectories = " << all_results[ i ].num_trajectories << std::endl;
+    for( int i = STAGE1; i < STAGE7; ++i ){
+      out_stream << "\tfrac to keep after stage " << i << " = " << all_results[ i ].fraction_to_keep_for_each_stage[ i ] << std::endl;
+    }
+    out_stream << "\t with score " << all_results[ i ].score << std::endl;
+    out_stream.close();
   }
+
 }//main
 
 double
@@ -77,7 +103,7 @@ determine_fraction_of_real_survivors( std::vector< Trajectory > & trajectories, 
       trajectories.begin(),//begin
       trajectories.begin() + num_to_keep,//middle
       trajectories.end(),//end
-      ReverseTrajectorySorter( stage )//comparator
+      ReverseTrajectorySorter( STAGE1 )//comparator
     );
   }
   int num_valid = 0;
@@ -88,7 +114,8 @@ determine_fraction_of_real_survivors( std::vector< Trajectory > & trajectories, 
   }
 
   double const answer = double( num_valid ) / double( num_to_keep );
-  assert( answer < 1.0 );
+  if( answer > 1.0 ) std::cout << "\t" << answer << std::endl;
+  assert( answer <= 1.0 );
   return answer;
 }
 
@@ -97,18 +124,27 @@ run(
   std::vector< Trajectory > const & all_trajectories,
   std::array< double, 7 > const & average_runtime_for_stage_in_hours,
   double const max_cpu_hours,
-  int const ensemble_size
+  int const ensemble_size,
+  std::ofstream & log_stream
 ){
 
-  std::array< double, 6 > const step_sizes = { 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 };
+  //constexpr std::array< double, 6 > step_sizes = { 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 };
+  constexpr std::array< double, 6 > step_sizes = { 0.01, 0.2, 0.2, 0.2, 0.2, 0.2 };
 
-  //std::array< double, 4 > num_trajectories { 1e5, 1e6, 1e7, 1e8 };
-  std::array< double, 4 > num_trajectories { 50, 100, 500 };
+
+  constexpr std::array< double, 9 > num_trajectories { 1000, 5000, 10000, 15000, 20000, 25000, 50000, 75000, 94800 };
+  //constexpr std::array< double, 9 > num_trajectories { 5000 };
+
   int best_num_trajectories = 0;
   double best_score = 99999;
 
   std::array< double, 6 > fractions_to_keep { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-  std::array< double, 6 > best_fractions_to_keep;
+  std::array< double, 6 > best_fractions_to_keep{ 1,1,1,1,1,1 };
+
+  for( int i=1; i<=6; ++i ){
+    log_stream << "fractions_to_keep_after_stage" << i << "\t";
+  }
+  log_stream << "ntraj\tscore" << std::endl;
 
   for( int n_traj : num_trajectories ){
     std::vector< Trajectory > trajectories( all_trajectories.begin(), all_trajectories.begin() + n_traj );
@@ -143,6 +179,9 @@ run(
 	  fractions_to_keep[ STAGE3 ] <= 1.0;
 	  fractions_to_keep[ STAGE3 ] += step_sizes[ STAGE3 ]
 	){
+
+	  std::stringstream ss;
+	  //std::cout << "Stage3 = " << fractions_to_keep[ STAGE3 ] << std::endl;
 
 	  //zero-out everything upward
 	  for( int i = STAGE4; i < NUM_STAGES; ++i )
@@ -183,8 +222,14 @@ run(
 		    trajectories,
 		    fractions_to_keep
 		  );
+		ss << n_traj << "\t";
+		for( double d : fractions_to_keep ){
+		  ss << d << "\t";
+		}
 		double const score = evaluate( survivors, ensemble_size );
+		ss << score << std::endl;
 		if( score < best_score ){
+		  ss << "New Best!" << std::endl;
 		  best_score = score;
 		  best_num_trajectories = n_traj;
 		  best_fractions_to_keep = fractions_to_keep;
@@ -196,16 +241,21 @@ run(
 
 	  }//fractions_to_keep[ STAGE4 ]
 
+	  log_stream << ss.str();
+
 	}//fractions_to_keep[ STAGE3 ]
 
       }//fractions_to_keep[ STAGE2 ]
 
     }//fractions_to_keep[ STAGE1 ]
 
+    std::cout << "DONE!" << std::endl;
+
   }//ntraj
 
   run_results results;
   results.num_trajectories = best_num_trajectories;
   results.fraction_to_keep_for_each_stage = best_fractions_to_keep;
+  resutsl.score = best_score;
   return results;
 }
