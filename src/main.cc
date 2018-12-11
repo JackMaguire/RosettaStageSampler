@@ -7,6 +7,7 @@
 #include <cassert>
 #include <iostream>
 #include <fstream>
+#include <chrono>
 
 #define CHECK_FOR_DEAD_END_ELIMINATION double const estimated_runtime = estimate_minimum_runtime_in_hours( trajectories.size(), average_runtime_for_stage_in_hours, fractions_to_keep, true ); if( estimated_runtime > max_cpu_hours ) break;
 
@@ -72,7 +73,10 @@ int main(){
 
     std::ofstream log_stream;
     log_stream.open( std::to_string( i ) + ".log" );    
+    auto start = std::chrono::system_clock::now();
     all_results[ i ] = run( trajectories, average_runtime_for_stage_in_hours, max_cpu, ensemble_size, log_stream );
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
     log_stream.close();
 
     std::cout << "For max_cpu = " << max_cpu << " and ensemble_size = " << ensemble_size << " best conditions are:" << std::endl;
@@ -81,6 +85,7 @@ int main(){
       std::cout << "\tfrac to keep after stage " << i << " = " << all_results[ i ].fraction_to_keep_for_each_stage[ i ] << std::endl;
     }
     std::cout << "\t with score " << all_results[ i ].score << std::endl;
+    std::cout << "\t over " << elapsed_seconds.count() << "seconds" << std::endl;
 
     std::ofstream out_stream;
     out_stream.open( std::to_string( i ) + ".dat" );
@@ -90,6 +95,7 @@ int main(){
       out_stream << "\tfrac to keep after stage " << i << " = " << all_results[ i ].fraction_to_keep_for_each_stage[ i ] << std::endl;
     }
     out_stream << "\t with score " << all_results[ i ].score << std::endl;
+    out_stream << "\t over " << elapsed_seconds.count() << "seconds" << std::endl;
     out_stream.close();
   }
 
@@ -129,11 +135,12 @@ run(
 ){
 
   //constexpr std::array< double, 6 > step_sizes = { 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 };
-  constexpr std::array< double, 6 > step_sizes = { 0.01, 0.2, 0.2, 0.2, 0.2, 0.2 };
+  constexpr std::array< double, 6 > step_sizes = { 0.03, 0.2, 0.2, 0.2, 0.2, 0.2 };
 
 
-  constexpr std::array< double, 9 > num_trajectories { 1000, 5000, 10000, 15000, 20000, 25000, 50000, 75000, 94800 };
-  //constexpr std::array< double, 9 > num_trajectories { 5000 };
+  //constexpr std::array< double, 9 > num_trajectories { 1000, 5000, 10000, 15000, 20000, 25000, 50000, 75000, 94800 };
+  constexpr std::array< double, 9 > num_trajectories { 1000, 5000, 10000, 15000, 20000, 25000 };
+
 
   int best_num_trajectories = 0;
   double best_score = 99999;
@@ -256,6 +263,6 @@ run(
   run_results results;
   results.num_trajectories = best_num_trajectories;
   results.fraction_to_keep_for_each_stage = best_fractions_to_keep;
-  resutsl.score = best_score;
+  results.score = best_score;
   return results;
 }
