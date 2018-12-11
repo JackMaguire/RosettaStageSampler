@@ -7,6 +7,7 @@ fi
 
 extra="-g -O0 -Wall"
 #extra="-Ofast"
+#extra="-O3"
 
 CXX="g++-5"
 #CXX="clang++"

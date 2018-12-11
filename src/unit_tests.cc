@@ -411,11 +411,158 @@ bool run_test_3(){
   return PASS;
 }
 
+bool run_test_4(){
+  //Tests evaluate();
+
+  //CASE 1
+  {
+    //conditions:
+    // # scores
+    // 0 { 0, 0, 0, 0, 0, 0, -1 }
+    // 1 { 0, 0, 0, 0, 0, 0, -8 }
+    // 2 { 0, 0, 0, 0, 0, 0, -2 }
+    // 3 { 0, 0, 0, 0, 0, 0, -7 }
+    // 4 { 0, 0, 0, 0, 0, 0, -3 }
+    // 5 { 0, 0, 0, 0, 0, 0, -6 }
+    // 6 { 0, 0, 0, 0, 0, 0, -4 }
+    // 7 { 0, 0, 0, 0, 0, 0, -4 }
+
+
+    std::vector< Trajectory > trajectories( 8 );
+    for( int i=0; i<trajectories.size(); ++i ){
+      Trajectory & t = trajectories[ i ];
+      for( int stage = STAGE1; stage < STAGE6; ++stage ){
+	t.score_at_the_end_of_stage[ stage ] = 0;
+      }
+
+      switch( i ){
+	case 0:
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -1.0;
+	  break;
+	case 1:
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -8.0;
+	  break;
+	case 2:
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -2.0;
+	  break;
+	case 3:
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -7.0;
+	  break;
+	case 4:
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -3.0;
+	  break;
+	case 5:
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -6.0;
+	  break;
+	case 6:
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -4.0;
+	  break;
+	case 7:
+	  t.score_at_the_end_of_stage[ STAGE6 ] = -4.0;
+	  break;
+      }
+    }
+
+    {//ensemble_size == 1
+      constexpr int ensemble_size = 1;
+      constexpr double expectation = -8;
+      double const reality = evaluate( trajectories, ensemble_size );
+      if( ! vals_are_very_close( reality, expectation ) ){
+	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
+	  "reality == " << reality << " instead of " << expectation << std::endl;
+	return FAIL;
+      }
+    }
+
+    {
+      constexpr int ensemble_size = 2;
+      constexpr double expectation = -8-7;
+      double const reality = evaluate( trajectories, ensemble_size );
+      if( ! vals_are_very_close( reality, expectation ) ){
+	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
+	  "reality == " << reality << " instead of " << expectation << std::endl;
+	return FAIL;
+      }
+    }
+
+    {
+      constexpr int ensemble_size = 3;
+      constexpr double expectation = -8-7-6;
+      double const reality = evaluate( trajectories, ensemble_size );
+      if( ! vals_are_very_close( reality, expectation ) ){
+	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
+	  "reality == " << reality << " instead of " << expectation << std::endl;
+	return FAIL;
+      }
+    }
+
+    {
+      constexpr int ensemble_size = 4;
+      constexpr double expectation = -8-7-6-4;
+      double const reality = evaluate( trajectories, ensemble_size );
+      if( ! vals_are_very_close( reality, expectation ) ){
+	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
+	  "reality == " << reality << " instead of " << expectation << std::endl;
+	return FAIL;
+      }
+    }
+
+    {
+      constexpr int ensemble_size = 5;
+      constexpr double expectation = -8-7-6-4-4;
+      double const reality = evaluate( trajectories, ensemble_size );
+      if( ! vals_are_very_close( reality, expectation ) ){
+	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
+	  "reality == " << reality << " instead of " << expectation << std::endl;
+	return FAIL;
+      }
+    }
+
+    {
+      constexpr int ensemble_size = 6;
+      constexpr double expectation = -8-7-6-4-4-3;
+      double const reality = evaluate( trajectories, ensemble_size );
+      if( ! vals_are_very_close( reality, expectation ) ){
+	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
+	  "reality == " << reality << " instead of " << expectation << std::endl;
+	return FAIL;
+      }
+    }
+
+    {
+      constexpr int ensemble_size = 7;
+      constexpr double expectation = -8-7-6-4-4-3-2;
+      double const reality = evaluate( trajectories, ensemble_size );
+      if( ! vals_are_very_close( reality, expectation ) ){
+	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
+	  "reality == " << reality << " instead of " << expectation << std::endl;
+	return FAIL;
+      }
+    }
+
+    {
+      constexpr int ensemble_size = 8;
+      constexpr double expectation = -8-7-6-4-4-3-2-1;
+      double const reality = evaluate( trajectories, ensemble_size );
+      if( ! vals_are_very_close( reality, expectation ) ){
+	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
+	  "reality == " << reality << " instead of " << expectation << std::endl;
+	return FAIL;
+      }
+    }
+
+  }
+
+
+  return PASS;
+}
+
 int main(){
   if(
     run_test_1() &&
     run_test_2() &&
-    run_test_3()
+    run_test_3() &&
+    run_test_4()
   ){
     std::cout << "All tests pass" << std::endl;
     return 0;
