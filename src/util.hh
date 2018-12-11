@@ -8,25 +8,6 @@
 #include <iostream>
 
 
-std::array< double, 7 > get_mean_time_for_stage_in_hours (
-  std::vector< Trajectory > const & trajectories
-){
-  std::array< double, 7 > mean_time_for_stage = { 0, 0, 0, 0, 0, 0, 0 };
-  for( Trajectory const & t : trajectories ){
-    for( int i = 0; i < 7; ++i ){
-      mean_time_for_stage[ i ] += t.cpu_hours_for_stage[ i ];
-    }
-  }
-
-  for( int i = 0; i < 7; ++i ){
-    mean_time_for_stage[ i ] /= double( trajectories.size() );
-    std::cout << "mean time for stage " << i << ": " << mean_time_for_stage[ i ] << " hours" << std::endl;
-  }
-
-  return mean_time_for_stage;
-}
-
-
 [[nodiscard]]
 double estimate_minimum_runtime_in_hours(
   int num_total_trajectories,

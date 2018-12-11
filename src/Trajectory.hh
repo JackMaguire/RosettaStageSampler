@@ -8,6 +8,7 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <cassert>
 
 #include <global.hh>
 
@@ -20,7 +21,6 @@ struct Trajectory {
     read( line_tokens, column_for_title );
   }
 
-  std::array< double, 7 > cpu_hours_for_stage;
   std::array< double, 7 > score_at_the_end_of_stage;
 
   void read(
@@ -62,20 +62,6 @@ void Trajectory::read(
   std::unordered_map< std::string, int > const & column_for_title
 ){
   for( int i = 0; i < 7; ++i ){
-    //time
-    std::string const ti = "t" + std::to_string( i + 1 ) + "_timing_profile";
-    std::string const tf = "t" + std::to_string( i + 2 ) + "_timing_profile";
-
-    int const column_i = column_for_title.at( ti );
-    int const column_f = column_for_title.at( tf );
-
-    double const start_time_minutes = std::stod( line_tokens[ column_i ] );
-    double const end_time_minutes = std::stod( line_tokens[ column_f ] );
-
-    double const minutes_passed = end_time_minutes - start_time_minutes;
-    cpu_hours_for_stage[ i ] = minutes_passed / 60.0;
-
-    //score
     std::string const title_for_score = "m" + std::to_string( i + 1 );
     int const score_col = column_for_title.at( title_for_score );
     score_at_the_end_of_stage[ i ] = std::stod( line_tokens[ score_col ] );
@@ -123,8 +109,41 @@ get_column_for_title( std::string const & title_line ){
 
 }
 
-std::vector< Trajectory >
+
+bool
+read_times(
+  std::vector< std::string > const & line_tokens,
+  std::unordered_map< std::string, int > const & column_for_title,
+  std::array< double, 7 > & average_runtime_for_stage_in_hours
+){
+  for( int i = 0; i < 7; ++i ){
+    //time
+    std::string const ti = "t" + std::to_string( i + 1 ) + "_timing_profile";
+    std::string const tf = "t" + std::to_string( i + 2 ) + "_timing_profile";
+
+    int const column_i = column_for_title.at( ti );
+    int const column_f = column_for_title.at( tf );
+
+    if( line_tokens[ column_i ] == "0" && line_tokens[ column_f ] == "0" ){
+      assert( i == 0 );
+      return false;
+    }
+
+    double const start_time_minutes = std::stod( line_tokens[ column_i ] );
+    double const end_time_minutes = std::stod( line_tokens[ column_f ] );
+
+    double const minutes_passed = end_time_minutes - start_time_minutes;
+    average_runtime_for_stage_in_hours[ i ] += minutes_passed / 60.0;
+  }
+
+  return true;
+}
+
+std::pair< std::vector< Trajectory >, std::array< double, 7 > >
 load_trajectories( std::string const & filename ){
+  std::array< double, 7 > average_runtime_for_stage_in_hours = {0,0,0,0,0,0,0};
+  int num_time_points = 0;
+
   std::vector< std::string > const file_lines = read_lines( filename );
 
   std::unordered_map< std::string, int > const column_for_title =
@@ -137,7 +156,17 @@ load_trajectories( std::string const & filename ){
     std::string const & line = file_lines[ i ];
     std::vector< std::string > const & tokens = split( line );
     all_trajectories.emplace_back( tokens, column_for_title );
+
+    if( read_times( tokens, column_for_title, average_runtime_for_stage_in_hours ) ){
+      ++num_time_points;
+    }
   }
 
-  return all_trajectories;
+  std::cout << "Reading times from " << num_time_points << " time points" << std::endl;
+
+  for( int i = 0; i < 7; ++i ){
+    average_runtime_for_stage_in_hours[ i ] /= num_time_points;
+  }
+
+  return std::make_pair( all_trajectories, average_runtime_for_stage_in_hours );
 }

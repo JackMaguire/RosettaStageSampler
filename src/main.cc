@@ -41,9 +41,10 @@ int main(){
 
    */
 
-  std::vector< Trajectory > const trajectories = load_trajectories( "temp_scores_for_development.txt" );
+  auto my_pair = load_trajectories( "temp_scores_for_development.txt" );
+  std::vector< Trajectory > const trajectories = std::move( my_pair.first );
   std::array< double, 7 > const average_runtime_for_stage_in_hours =
-    get_mean_time_for_stage_in_hours( trajectories );
+    my_pair.second;
 
   std::array< double, 4 > const max_cpu_hour_options { 1e3, 1e4, 1e5, 1e6 };
   std::array< int, 6 > const ensemble_size_options { 1, 5, 10, 50, 100, 500 };
