@@ -5,8 +5,8 @@ if [[ "$#" -gt "0" ]]; then
     case=$1
 fi
 
-extra="-g -ggdb -Wall -gdwarf-3"
-#extra="-Ofast"
+#extra="-g -ggdb -Wall -gdwarf-3"
+extra="-Ofast"
 #extra="-O3"
 
 CXX="g++-5"

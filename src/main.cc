@@ -41,7 +41,7 @@ int main(){
 
    */
 
-  auto my_pair = load_trajectories( "temp_scores_for_development.txt" );
+  auto my_pair = load_trajectories( "../run/trajectories.dat" );
   std::vector< Trajectory > const trajectories = std::move( my_pair.first );
   std::array< double, 7 > const average_runtime_for_stage_in_hours =
     my_pair.second;
