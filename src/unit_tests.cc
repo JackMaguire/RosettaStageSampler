@@ -476,7 +476,7 @@ bool run_test_4(){
 
     {
       constexpr int ensemble_size = 2;
-      constexpr double expectation = (-8-7)/ensemble_size;
+      constexpr double expectation = double(-8-7)/ensemble_size;
       double const reality = evaluate( trajectories, ensemble_size );
       if( ! vals_are_very_close( reality, expectation ) ){
 	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
@@ -487,7 +487,7 @@ bool run_test_4(){
 
     {
       constexpr int ensemble_size = 3;
-      constexpr double expectation = (-8-7-6)/ensemble_size;
+      constexpr double expectation = double(-8-7-6)/ensemble_size;
       double const reality = evaluate( trajectories, ensemble_size );
       if( ! vals_are_very_close( reality, expectation ) ){
 	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
@@ -498,7 +498,7 @@ bool run_test_4(){
 
     {
       constexpr int ensemble_size = 4;
-      constexpr double expectation = (-8-7-6-4)/ensemble_size;
+      constexpr double expectation = double(-8-7-6-4)/ensemble_size;
       double const reality = evaluate( trajectories, ensemble_size );
       if( ! vals_are_very_close( reality, expectation ) ){
 	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
@@ -509,7 +509,7 @@ bool run_test_4(){
 
     {
       constexpr int ensemble_size = 5;
-      constexpr double expectation = (-8-7-6-4-4)/ensemble_size;
+      constexpr double expectation = double(-8-7-6-4-4)/ensemble_size;
       double const reality = evaluate( trajectories, ensemble_size );
       if( ! vals_are_very_close( reality, expectation ) ){
 	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
@@ -520,7 +520,7 @@ bool run_test_4(){
 
     {
       constexpr int ensemble_size = 6;
-      constexpr double expectation = (-8-7-6-4-4-3)/ensemble_size;
+      constexpr double expectation = double(-8-7-6-4-4-3)/ensemble_size;
       double const reality = evaluate( trajectories, ensemble_size );
       if( ! vals_are_very_close( reality, expectation ) ){
 	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
@@ -531,7 +531,7 @@ bool run_test_4(){
 
     {
       constexpr int ensemble_size = 7;
-      constexpr double expectation = (-8-7-6-4-4-3-2)/ensemble_size;
+      constexpr double expectation = double(-8-7-6-4-4-3-2)/ensemble_size;
       double const reality = evaluate( trajectories, ensemble_size );
       if( ! vals_are_very_close( reality, expectation ) ){
 	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
@@ -542,7 +542,7 @@ bool run_test_4(){
 
     {
       constexpr int ensemble_size = 8;
-      constexpr double expectation = (-8-7-6-4-4-3-2-1)/ensemble_size;
+      constexpr double expectation = double(-8-7-6-4-4-3-2-1)/ensemble_size;
       double const reality = evaluate( trajectories, ensemble_size );
       if( ! vals_are_very_close( reality, expectation ) ){
 	std::cout << "run_test_4 case 1 with ensemble size " << ensemble_size << " failed!\n"
