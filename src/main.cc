@@ -54,7 +54,7 @@ int main(){
     std::cout << "average time for stage " << i << " is " << average_runtime_for_stage_in_hours[ i ] << "hours\n";
   }
 
-  constexpr std::array< double, 4 > max_cpu_hour_options { 1e3, 1e4, 1e5, 1e6 };
+  constexpr std::array< double, 5 > max_cpu_hour_options { 1e3, 5e3, 1e4, 5e4, 1e5 };
   constexpr std::array< int, 6 > ensemble_size_options { 1, 5, 10, 50, 100, 500 };
 
   constexpr int num_combos = max_cpu_hour_options.size() * ensemble_size_options.size();
@@ -64,9 +64,9 @@ int main(){
 
 #pragma omp parallel shared( all_results )
 #pragma omp for
-  for( int i = num_combos - 1; i >= 0; --i ){//work backwards, do slow ones first
-    int const cpu_ind = i % max_cpu_hour_options.size();
-    int const ensemble_ind = i / max_cpu_hour_options.size();
+  for( int i = num_combos - 1; i >= 0; --i ){
+    int const cpu_ind = i / ensemble_size_options.size();
+    int const ensemble_ind = i % ensemble_size_options.size();
     double const max_cpu = max_cpu_hour_options[ cpu_ind ];
     int const ensemble_size = ensemble_size_options[ ensemble_ind ];
 
@@ -135,11 +135,11 @@ run(
 ){
 
   //constexpr std::array< double, 6 > step_sizes = { 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 };
-  constexpr std::array< double, 6 > step_sizes = { 0.03, 0.2, 0.2, 0.2, 0.2, 0.2 };
+  constexpr std::array< double, 6 > step_sizes = { 0.05, 0.1, 0.1, 0.1, 0.1, 0.1 };
 
 
-  //constexpr std::array< double, 9 > num_trajectories { 1000, 5000, 10000, 15000, 20000, 25000, 50000, 75000, 94800 };
-  constexpr std::array< double, 9 > num_trajectories { 1000, 5000, 10000, 15000, 20000, 25000 };
+  constexpr std::array< double, 9 > num_trajectories { 1000, 5000, 10000, 15000, 20000, 25000, 50000, 75000, 94800 };
+  //constexpr std::array< double, 9 > num_trajectories { 1000, 5000, 10000, 15000, 20000, 25000 };
 
 
   int best_num_trajectories = 0;
