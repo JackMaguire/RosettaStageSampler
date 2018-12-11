@@ -431,34 +431,34 @@ bool run_test_4(){
     std::vector< Trajectory > trajectories( 8 );
     for( int i=0; i<trajectories.size(); ++i ){
       Trajectory & t = trajectories[ i ];
-      for( int stage = STAGE1; stage < STAGE6; ++stage ){
+      for( int stage = STAGE1; stage < STAGE7; ++stage ){
 	t.score_at_the_end_of_stage[ stage ] = 0;
       }
 
       switch( i ){
 	case 0:
-	  t.score_at_the_end_of_stage[ STAGE6 ] = -1.0;
+	  t.score_at_the_end_of_stage[ STAGE7 ] = -1.0;
 	  break;
 	case 1:
-	  t.score_at_the_end_of_stage[ STAGE6 ] = -8.0;
+	  t.score_at_the_end_of_stage[ STAGE7 ] = -8.0;
 	  break;
 	case 2:
-	  t.score_at_the_end_of_stage[ STAGE6 ] = -2.0;
+	  t.score_at_the_end_of_stage[ STAGE7 ] = -2.0;
 	  break;
 	case 3:
-	  t.score_at_the_end_of_stage[ STAGE6 ] = -7.0;
+	  t.score_at_the_end_of_stage[ STAGE7 ] = -7.0;
 	  break;
 	case 4:
-	  t.score_at_the_end_of_stage[ STAGE6 ] = -3.0;
+	  t.score_at_the_end_of_stage[ STAGE7 ] = -3.0;
 	  break;
 	case 5:
-	  t.score_at_the_end_of_stage[ STAGE6 ] = -6.0;
+	  t.score_at_the_end_of_stage[ STAGE7 ] = -6.0;
 	  break;
 	case 6:
-	  t.score_at_the_end_of_stage[ STAGE6 ] = -4.0;
+	  t.score_at_the_end_of_stage[ STAGE7 ] = -4.0;
 	  break;
 	case 7:
-	  t.score_at_the_end_of_stage[ STAGE6 ] = -4.0;
+	  t.score_at_the_end_of_stage[ STAGE7 ] = -4.0;
 	  break;
       }
     }
