@@ -100,7 +100,7 @@ evaluate(
   //average over the top ensemble_size elements
   double sum = 0;
   for( int i = 0; i < ensemble_size && i < trajectories.size(); ++i ){
-    sum += trajectories[ i ].score_at_the_end_of_stage[ STAGE7 ];
+    sum += trajectories[ i ].score_at_the_end_of_stage[ stage ];
   }
   return sum / ensemble_size;
 }
