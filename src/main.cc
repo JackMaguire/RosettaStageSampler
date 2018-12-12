@@ -198,14 +198,13 @@ run(
 	  fractions_to_keep[ STAGE5 ] = -1.0;
 	  fractions_to_keep[ STAGE4 ] = -1.0;
 	  fractions_to_keep[ STAGE3 ] = -1.0;
-	  ss << n_traj << "\t1\t";
-	  for( double d : fractions_to_keep ){
-	    ss << d << "\t";
-	  }
 	  double const score = evaluate( survivors, ensemble_size, STAGE3 );
-	  ss << score << std::endl;
 	  if( score < best_score ){
-	    ss << "New Best!" << std::endl;
+	    ss << n_traj << "\t1\t";
+	    for( double d : fractions_to_keep ){
+	      ss << d << "\t";
+	    }
+	    ss << score << std::endl;
 	    best_score = score;
 	    best_num_trajectories = n_traj;
 	    best_fractions_to_keep = fractions_to_keep;
@@ -235,14 +234,13 @@ run(
 	    fractions_to_keep[ STAGE6 ] = -1.0;
 	    fractions_to_keep[ STAGE5 ] = -1.0;
 	    fractions_to_keep[ STAGE4 ] = -1.0;
-	    ss << n_traj << "\t2\t";
-	    for( double d : fractions_to_keep ){
-	      ss << d << "\t";
-	    }
 	    double const score = evaluate( survivors, ensemble_size, STAGE4 );
-	    ss << score << std::endl;
 	    if( score < best_score ){
-	      ss << "New Best!" << std::endl;
+	      ss << n_traj << "\t2\t";
+	      for( double d : fractions_to_keep ){
+		ss << d << "\t";
+	      }
+	      ss << score << std::endl;
 	      best_score = score;
 	      best_num_trajectories = n_traj;
 	      best_fractions_to_keep = fractions_to_keep;
@@ -271,14 +269,13 @@ run(
 		);
 	      fractions_to_keep[ STAGE6 ] = -1.0;
 	      fractions_to_keep[ STAGE5 ] = -1.0;
-	      ss << n_traj << "\t3\t";
-	      for( double d : fractions_to_keep ){
-		ss << d << "\t";
-	      }
 	      double const score = evaluate( survivors, ensemble_size, STAGE5 );
-	      ss << score << std::endl;
 	      if( score < best_score ){
-		ss << "New Best!" << std::endl;
+		ss << n_traj << "\t3\t";
+		for( double d : fractions_to_keep ){
+		  ss << d << "\t";
+		}
+		ss << score << std::endl;
 		best_score = score;
 		best_num_trajectories = n_traj;
 		best_fractions_to_keep = fractions_to_keep;
@@ -304,14 +301,14 @@ run(
 		    fractions_to_keep
 		  );
 		fractions_to_keep[ STAGE6 ] = -1.0;
-		ss << n_traj << "\t4\t";
-		for( double d : fractions_to_keep ){
-		  ss << d << "\t";
-		}
 		double const score = evaluate( survivors, ensemble_size, STAGE6 );
-		ss << score << std::endl;
+
 		if( score < best_score ){
-		  ss << "New Best!" << std::endl;
+		  ss << n_traj << "\t4\t";
+		  for( double d : fractions_to_keep ){
+		    ss << d << "\t";
+		  }
+		  ss << score << std::endl;
 		  best_score = score;
 		  best_num_trajectories = n_traj;
 		  best_fractions_to_keep = fractions_to_keep;
@@ -332,14 +329,13 @@ run(
 		    trajectories,
 		    fractions_to_keep
 		  );
-		ss << n_traj << "\t5\t";
-		for( double d : fractions_to_keep ){
-		  ss << d << "\t";
-		}
 		double const score = evaluate( survivors, ensemble_size );
-		ss << score << std::endl;
 		if( score < best_score ){
-		  ss << "New Best!" << std::endl;
+		  ss << n_traj << "\t5\t";
+		  for( double d : fractions_to_keep ){
+		    ss << d << "\t";
+		  }
+		  ss << score << std::endl;
 		  best_score = score;
 		  best_num_trajectories = n_traj;
 		  best_fractions_to_keep = fractions_to_keep;
