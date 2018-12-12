@@ -138,7 +138,7 @@ run(
 
 
   //constexpr std::array< double, 9 > num_trajectories { 1000, 5000, 10000, 15000, 20000, 25000, 50000, 75000, 94800 };
-  constexpr std::array< double, 9 > num_trajectories { 1000, 2000, 3000, 4000, 5000, 7500, 10000, 15000, 20000, 25000, 50000, 75000 };
+  constexpr std::array< double, 12 > num_trajectories { 1000, 2000, 3000, 4000, 5000, 7500, 10000, 15000, 20000, 25000, 50000, 75000 };
 
 
   int best_num_trajectories = 0;
