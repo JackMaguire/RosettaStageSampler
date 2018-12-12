@@ -78,23 +78,23 @@ int main(){
     std::chrono::duration<double> elapsed_seconds = end-start;
     log_stream.close();
 
-    std::cout << "For max_cpu = " << max_cpu << " and ensemble_size = " << ensemble_size << " best conditions are:" << std::endl;
-    std::cout << "\tnum_trajectories = " << all_results[ i ].num_trajectories << std::endl;
+    std::cout << "For max_cpu = " << max_cpu << " and ensemble_size = " << ensemble_size << " best conditions are:" << "\n";
+    std::cout << "\tnum_trajectories = " << all_results[ i ].num_trajectories << "\n";
     for( int i = STAGE1; i < STAGE7; ++i ){
-      std::cout << "\tfrac to keep after stage " << i << " = " << all_results[ i ].fraction_to_keep_for_each_stage[ i ] << std::endl;
+      std::cout << "\tfrac to keep after stage " << i << " = " << all_results[ i ].fraction_to_keep_for_each_stage[ i ] << "\n";
     }
-    std::cout << "\t with score " << all_results[ i ].score << std::endl;
-    std::cout << "\t over " << elapsed_seconds.count() << "seconds" << std::endl;
+    std::cout << "\t with score " << all_results[ i ].score << "\n";
+    std::cout << "\t over " << elapsed_seconds.count() << "seconds" << "\n";
 
     std::ofstream out_stream;
     out_stream.open( std::to_string( i ) + ".dat" );
-    out_stream << "For max_cpu = " << max_cpu << " and ensemble_size = " << ensemble_size << " best conditions are:" << std::endl;
-    out_stream << "\tnum_trajectories = " << all_results[ i ].num_trajectories << std::endl;
+    out_stream << "For max_cpu = " << max_cpu << " and ensemble_size = " << ensemble_size << " best conditions are:" << "\n";
+    out_stream << "\tnum_trajectories = " << all_results[ i ].num_trajectories << "\n";
     for( int i = STAGE1; i < STAGE7; ++i ){
-      out_stream << "\tfrac to keep after stage " << i << " = " << all_results[ i ].fraction_to_keep_for_each_stage[ i ] << std::endl;
+      out_stream << "\tfrac to keep after stage " << i << " = " << all_results[ i ].fraction_to_keep_for_each_stage[ i ] << "\n";
     }
-    out_stream << "\t with score " << all_results[ i ].score << std::endl;
-    out_stream << "\t over " << elapsed_seconds.count() << "seconds" << std::endl;
+    out_stream << "\t with score " << all_results[ i ].score << "\n";
+    out_stream << "\t over " << elapsed_seconds.count() << "seconds" << "\n";
     out_stream.close();
   }
 
@@ -147,7 +147,7 @@ run(
   std::array< double, 6 > fractions_to_keep { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
   std::array< double, 6 > best_fractions_to_keep{ 1,1,1,1,1,1 };
 
-  log_stream << "ntraj\tnum_repeats\t" << std::endl;
+  log_stream << "ntraj\tnum_repeats\t";
   for( int i=1; i<=6; ++i ){
     log_stream << "fractions_to_keep_after_stage" << i << "\t";
   }
@@ -204,7 +204,7 @@ run(
 	    for( double d : fractions_to_keep ){
 	      ss << d << "\t";
 	    }
-	    ss << score << std::endl;
+	    ss << score << "\n";
 	    best_score = score;
 	    best_num_trajectories = n_traj;
 	    best_fractions_to_keep = fractions_to_keep;
@@ -240,7 +240,7 @@ run(
 	      for( double d : fractions_to_keep ){
 		ss << d << "\t";
 	      }
-	      ss << score << std::endl;
+	      ss << score << "\n";
 	      best_score = score;
 	      best_num_trajectories = n_traj;
 	      best_fractions_to_keep = fractions_to_keep;
@@ -275,7 +275,7 @@ run(
 		for( double d : fractions_to_keep ){
 		  ss << d << "\t";
 		}
-		ss << score << std::endl;
+		ss << score << "\n";
 		best_score = score;
 		best_num_trajectories = n_traj;
 		best_fractions_to_keep = fractions_to_keep;
@@ -308,7 +308,7 @@ run(
 		  for( double d : fractions_to_keep ){
 		    ss << d << "\t";
 		  }
-		  ss << score << std::endl;
+		  ss << score << "\n";
 		  best_score = score;
 		  best_num_trajectories = n_traj;
 		  best_fractions_to_keep = fractions_to_keep;
@@ -335,7 +335,7 @@ run(
 		  for( double d : fractions_to_keep ){
 		    ss << d << "\t";
 		  }
-		  ss << score << std::endl;
+		  ss << score << "\n";
 		  best_score = score;
 		  best_num_trajectories = n_traj;
 		  best_fractions_to_keep = fractions_to_keep;
@@ -354,8 +354,6 @@ run(
       }//fractions_to_keep[ STAGE2 ]
 
     }//fractions_to_keep[ STAGE1 ]
-
-    std::cout << "DONE!" << std::endl;
 
   }//ntraj
 
