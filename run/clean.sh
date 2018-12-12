@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ls -1t * | grep -v or | grep -v raw | grep -v .sh | xargs -n1 rm
+ls -1p * | grep -v / | grep -v or | grep -v raw | grep -v .sh | while read x; do rm $x; done

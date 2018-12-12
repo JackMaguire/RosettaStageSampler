@@ -134,11 +134,11 @@ run(
 ){
 
   //constexpr std::array< double, 6 > step_sizes = { 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 };
-  constexpr std::array< double, 6 > step_sizes = { 0.02, 0.15, 0.25, 0.2, 0.25, 0.2 };
+  constexpr std::array< double, 6 > step_sizes = { 0.01, 0.025, 0.033, 0.04, 0.04, 0.05 };
 
 
   //constexpr std::array< double, 9 > num_trajectories { 1000, 5000, 10000, 15000, 20000, 25000, 50000, 75000, 94800 };
-  constexpr std::array< double, 9 > num_trajectories { 1000, 5000, 10000, 15000 };
+  constexpr std::array< double, 9 > num_trajectories { 1000, 2000, 3000, 4000, 5000, 7500, 10000, 15000, 20000, 25000, 50000, 75000 };
 
 
   int best_num_trajectories = 0;
@@ -159,7 +159,7 @@ run(
 
     for(
       fractions_to_keep[ STAGE1 ] = 0.01;
-      fractions_to_keep[ STAGE1 ] <= 1.0;
+      fractions_to_keep[ STAGE1 ] <= 0.6;
       fractions_to_keep[ STAGE1 ] += step_sizes[ STAGE1 ]
     ){
 
